@@ -1,0 +1,22 @@
+{
+  "name": "DieZombies",
+  "version": "0.0.1",
+  "description": "A multiplayer zombie shoot'em up game",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ozymandias547/DieZombies.git"
+  },
+  "keywords": [
+    "zombies"
+  ],
+  "author": "Joseph and Joshua Jung",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ozymandias547/DieZombies/issues"
+  }
+}
