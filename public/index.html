@@ -15,23 +15,14 @@
     </div>
 </body>
 
-<script type="text/javascript" src="js/VENDOR/jquery.js"></script>
+<script data-main="js/lib/main" src="bower_components/requirejs/require.js"></script>
+
+
+<!-- <script type="text/javascript" src="js/VENDOR/jquery.js"></script>
 <script type="text/javascript" src="js/dieZombieEngine.js"></script>
 <script type="text/javascript" src="js/fitViewportToRatio.js"></script>
-<script type="text/javascript" src="js/fullScreenApi.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="js/fullScreenApi.js"></script> -->
 
-$(document).ready(function() {
 
-    dieZombieEngine.init("canvas");
-
-    $(".goFullScreen").on("click", function() {
-        $("#screen").requestFullScreen();
-    })
-
-    $(window).on("resize", fitRatioToViewport.calculate);
-    $(window).trigger("resize")
-})
-</script>
 
 </html>
