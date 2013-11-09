@@ -1,7 +1,7 @@
  
 var fitRatioToViewport = (function () {
      
-    var ratioWidth = 600,
+    var ratioWidth = 800,
         ratioHeight = 400,
         windowWidth = $(window).width(),
         windowHeight = $(window).height(),
