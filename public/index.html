@@ -3,13 +3,12 @@
 
 <head>
     <title>Die</title>
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="styles/styles.css" />
 </head>
 
 <body>
     <div id="screen">
         <div id="overlay">
-            <div>DieZombies!</div>
             <button class="goFullScreen">Go fullscreen!</button>
         </div>
         <canvas id="canvas" width="600" height="400" tabindex='1'></canvas>
@@ -17,11 +16,14 @@
 </body>
 
 <script type="text/javascript" src="js/VENDOR/jquery.js"></script>
+<script type="text/javascript" src="js/dieZombieEngine.js"></script>
 <script type="text/javascript" src="js/fitViewportToRatio.js"></script>
 <script type="text/javascript" src="js/fullScreenApi.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
+
+    dieZombieEngine.init("canvas");
 
     $(".goFullScreen").on("click", function() {
         $("#screen").requestFullScreen();
