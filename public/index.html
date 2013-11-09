@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Die</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+    <div id="screen">
+        <div id="overlay">
+            <div>DieZombies!</div>
+            <button class="goFullScreen">Go fullscreen!</button>
+        </div>
+        <canvas id="canvas" width="600" height="400" tabindex='1'></canvas>
+    </div>
+</body>
+
+<script type="text/javascript" src="js/VENDOR/jquery.js"></script>
+<script type="text/javascript" src="js/fitViewportToRatio.js"></script>
+<script type="text/javascript" src="js/fullScreenApi.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    $(".goFullScreen").on("click", function() {
+        $("#screen").requestFullScreen();
+    })
+
+    $(window).on("resize", fitRatioToViewport.calculate);
+    $(window).trigger("resize")
+})
+</script>
+
+</html>
