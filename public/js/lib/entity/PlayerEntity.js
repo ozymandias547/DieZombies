@@ -1,4 +1,4 @@
-define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Iso) {
+define(["Entity", "vec3", "Sprite", "dieZombieEngine", "isometric"], function(Entity, Vec3, Sprite, Engine, Iso) {
 
 	var PlayerEntity = function(x, y, color, radius) {
 		Entity().constructor.call(this, x, y, color);
@@ -19,6 +19,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 		this.image = new Image();
 		this.image.src = "assets/GirlDarkExample.png";
+
 		this.image.onload = function() {
 			this.isReady = true;
 			this.runningDown = new Sprite(this.image, 40, 40, [
@@ -45,7 +46,6 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 		document.addEventListener("keydown", this.handleKeyDown.bind(this))
 		document.addEventListener("keyup", this.handleKeyUp.bind(this))
-
 	}
 
 	PlayerEntity.prototype = Entity();
@@ -71,7 +71,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 			}
 
 			var x = Iso.pX(this.position.x, this.position.y);
-			var y = Iso.pY(this.position.x, this.position.y, 0);
+			var y = Iso.pY(this.position.x, this.position.y, this.position.z);
 
 			if (this.isReady) {
 				switch (this.previousPressed) {
@@ -92,65 +92,64 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		},
 
 		isMoving: function() {
-
-			if (this.velocity.x > .2) return true;
-			if (this.velocity.x < -.2) return true;
-			if (this.velocity.y < -.2) return true;
-			if (this.velocity.y > .2) return true;
-
-			return false;
-
+			return this.velocity.x > 0.2 ||
+				this.velocity.x < -0.2 ||
+				this.velocity.y > 0.2 ||
+				this.velocity.y < -0.2 ||
+				this.velocity.z > 0.2 ||
+				this.velocity.z < -0.2;
 		},
 
 		update: function(elapsed, worldObjects) {
-			this.handleControls()
+
+			this.handleControls(elapsed);
 			this.velocity.sMultiplyEq(this.groundFriction)
 			this.velocity.sRestrictEq(this.maxSpeed);
-			this.position.vPlusEq(this.velocity)
+			this.position.vPlusEq(this.velocity);
+
+			this.tile = Engine.tileMap.getTileAt(this.position.x, this.position.y);
 		},
 
 		handleControls: function() {
 
 			if (this.upPressed) {
-				this.velocity.x += this.moveStep;
-				this.velocity.y -= this.moveStep;
+				this.velocity.x += this.moveStep * elapsed;
+				this.velocity.y -= this.moveStep * elapsed;
+			} else if (this.downPressed) {
+				this.velocity.x -= this.moveStep * elapsed;
+				this.velocity.y += this.moveStep * elapsed;
 			}
-			if (this.downPressed) {
-				this.velocity.x -= this.moveStep;
-				this.velocity.y += this.moveStep;
-			}
+
 			if (this.rightPressed) {
-				this.velocity.x += this.moveStep;
-				this.velocity.y += this.moveStep;
-			}
-			if (this.leftPressed) {
-				this.velocity.x -= this.moveStep;
-				this.velocity.y -= this.moveStep;
+				this.velocity.x += this.moveStep * elapsed;
+				this.velocity.y += this.moveStep * elapsed;
+			} else if (this.leftPressed) {
+				this.velocity.x -= this.moveStep * elapsed;
+				this.velocity.y -= this.moveStep * elapsed;
 			}
 		},
 
 		handleKeyDown: function(e) {
-
 			switch (e.which) {
 				case 87:
 					this.upPressed = true;
-					this.previousPressed = "up"
+					this.previousPressed = "up";
 					break;
 				case 83:
 					this.downPressed = true;
-					this.previousPressed = "down"
+					this.previousPressed = "down";
 					break;
 				case 68:
 					this.rightPressed = true;
-					this.previousPressed = "right"
+					this.previousPressed = "right";
 					break;
 				case 65:
 					this.leftPressed = true;
-					this.previousPressed = "left"
+					this.previousPressed = "left";
 					break;
 			}
-
 		},
+
 		handleKeyUp: function(e) {
 			switch (e.which) {
 				case 87:
@@ -167,10 +166,9 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 					break;
 			}
 		}
-	}
+	};
 
 	return function(x, y, color, radius) {
-		return new PlayerEntity(x, y, color, radius)
+		return new PlayerEntity(x, y, color, radius);
 	}
-
 });

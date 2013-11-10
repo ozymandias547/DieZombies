@@ -1,10 +1,10 @@
-define(['vec2'], function(Vec2) {
+define(['vec3'], function(Vec3) {
 
-	var Entity = function(x, y, color) {
+	var Entity = function(x, y, z, color) {
 			color = color || "red";
 
-			this.position = new Vec2(x, y);
-			this.velocity = new Vec2(0, 0);
+			this.position = new Vec3(x, y, z);
+			this.velocity = new Vec3(0, 0, 0);
 			this.speed = 0;
 
 			this.groundFriction = 0.92;

@@ -4,13 +4,14 @@ define(["grass", "isometric"], function (Grass, Iso) {
 		this._tileWidth = tileWidth;
 		this._tileHeight = tileHeight;
 
-		this.Tile = function (x, y, w, h, z, tileMap, rendererType)
+		this.Tile = function (x, y, w, h, z, tileMap, rendererType, edges)
 		{
 			this._x = x;
 			this._y = y;
 			this._z = z;
 			this._w = w;
 			this._h = h;
+			this._edges = edges;
 			this._tileMap = tileMap;
 			this._renderer = new rendererType();
 
@@ -37,6 +38,14 @@ define(["grass", "isometric"], function (Grass, Iso) {
 			this.draw = function(elapsed, context)
 			{
 				this._renderer.draw(elapsed, context, this._x, this._y, this._z, this._w, this._h);
+
+				if (edges)
+				{
+					for (var i = 0; i < edges.length; i++)
+					{
+
+					}
+				}
 			};
 
 			this.update = function(elapsed)
@@ -66,6 +75,11 @@ define(["grass", "isometric"], function (Grass, Iso) {
 				}
 			}
 		};
+
+		this.getTileAt = function(x, y)
+		{
+			return this._tiles[Math.floor(x / this._tileWidth)][Math.floor(y / this._tileHeight)];
+		}
 
 		this.draw = function(elapsed, context)
 		{
