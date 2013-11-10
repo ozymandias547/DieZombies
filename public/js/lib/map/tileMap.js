@@ -1,13 +1,16 @@
-define(["grass"], function (Grass) {
+define(["grass", "isometric"], function (Grass, Iso) {
 	return function TileMap(width, height, tileWidth, tileHeight)
 	{
 		this._tileWidth = tileWidth;
 		this._tileHeight = tileHeight;
 
-		this.Tile = function (x, y, tileMap, rendererType)
+		this.Tile = function (x, y, w, h, z, tileMap, rendererType)
 		{
 			this._x = x;
 			this._y = y;
+			this._z = z;
+			this._w = w;
+			this._h = h;
 			this._tileMap = tileMap;
 			this._renderer = new rendererType();
 
@@ -31,14 +34,19 @@ define(["grass"], function (Grass) {
 				return this._x + ", " + this._y;
 			};
 
-			this.draw = function(elapsed, context, x, y, w, h)
+			this.draw = function(elapsed, context)
 			{
-				this._renderer.draw(elapsed, context, x, y, w, h);
+				this._renderer.draw(elapsed, context, this._x, this._y, this._z, this._w, this._h);
 			};
 
 			this.update = function(elapsed)
 			{
 			};
+
+			this.zBuffIndex = function()
+			{
+				return Iso.pY(this._x + this._w, this._y, this._z);
+			}
 		};
 
 		this.resize = function (width, height)
@@ -54,19 +62,28 @@ define(["grass"], function (Grass) {
 
 				for (var y = 0; y < this._height; y++)
 				{
-					this._tiles[x][y] = new this.Tile(x, y, this, Grass);
+					this._tiles[x][y] = new this.Tile(x * this._tileWidth, y * this._tileHeight, this._tileWidth, this._tileHeight, Math.random() * 10, this, Grass);
 				}
 			}
 		};
 
 		this.draw = function(elapsed, context)
 		{
+			var zBuff = [];
+
 			for (var x = 0; x < this._width; x++)
 			{
 				for (var y = 0; y < this._height; y++)
 				{
-					this._tiles[x][y].draw(elapsed, context, x * this._tileWidth, y * this._tileHeight, this._tileWidth, this._tileHeight);
+					zBuff.push({tile: this._tiles[x][y], z: this._tiles[x][y].zBuffIndex()});
 				}
+			}
+
+			zBuff.sort(function (a,b) {return a.z - b.z});
+
+			for (var i = 0; i < zBuff.length; i++)
+			{
+				zBuff[i].tile.draw(elapsed, context);
 			}
 		};
 
