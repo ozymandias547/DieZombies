@@ -1,9 +1,10 @@
-define(['fitViewportToRatio', 'vec2'],
+define(['fitViewportToRatio', 'vec2', 'tileMap'],
 	function(fitViewportToRatio, Vec2) {
 
 		var canvas = null,
 			worldObjects = {},
-			mouseX, mouseY, isMouseDown;
+			mouseX, mouseY, isMouseDown,
+			lastTime = 0;
 
 
 
@@ -82,8 +83,8 @@ define(['fitViewportToRatio', 'vec2'],
 		/* ---- ENTITIES ----------------------------- */
 
 		var physics = {
-			gravity: new Vec2(0, 0), //unrealistic, but hey it's a game!
-			groundFriction: .9
+			gravity : new Vec2(0,0),	//unrealistic, but hey it's a game!
+			groundFriction : 0.9
 		}
 
 		/* ---- ENTITIES ----------------------------- */
@@ -111,14 +112,14 @@ define(['fitViewportToRatio', 'vec2'],
 		}
 
 		CircleEntity.prototype = {
-			draw: function() {
+			draw: function(context) {
 				context.fillStyle = this.color;
 				context.beginPath();
 				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
 				context.closePath();
 				context.fill();
 			},
-			update: function() {
+			update: function(elapsed) {
 
 			}
 		}
@@ -170,7 +171,7 @@ define(['fitViewportToRatio', 'vec2'],
 
 		PlayerEntity.prototype = {
 
-			draw: function() {
+			draw: function(context) {
 				if (this.isReady) {
 					var directionRunning = this.whichDirection();
 					switch (directionRunning) {
@@ -285,23 +286,31 @@ define(['fitViewportToRatio', 'vec2'],
 			(function loop(animStart) {
 				this.context.clearRect(0, 0, canvas.width, canvas.height);
 
-				update();
-				draw();
+				var elapsed = lastTime ? (new Date().getTime() - lastTime) / 1000.0 : 0.0;
+
+				update(elapsed);
+				draw(elapsed);
+
+				lastTime = new Date().getTime();
 
 				requestAnimFrame(loop);
 			})();
 		}
 
-		function update() {
+		function update(elapsed) {
 			//get data from server here?
 
 			for (var id in worldObjects)
-				worldObjects[id].update();
+			{
+				worldObjects[id].update(elapsed);
+			}
 		}
 
-		function draw() {
+		function draw(elapsed) {
 			for (var id in worldObjects)
-				worldObjects[id].draw();
+			{
+				worldObjects[id].draw(elapsed, this.context);
+			}
 		}
 
 		/* ---- EXPOSING API ----------------------------- */
