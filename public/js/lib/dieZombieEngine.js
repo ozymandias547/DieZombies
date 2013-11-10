@@ -82,8 +82,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		/* ---- ENTITIES ----------------------------- */
 
 		var physics = {
-			gravity : new Vec2(0,0),	//unrealistic, but hey it's a game!
-			groundFriction : 0.9
+			gravity: new Vec2(0, 0), //unrealistic, but hey it's a game!
+			groundFriction: 0.9
 		}
 
 		/* ---- ENTITIES ----------------------------- */
@@ -126,24 +126,44 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		var PlayerEntity = function(x, y, color, radius) {
 			Entity.call(this, x, y, color);
 			this.radius = radius;
-			this.moveStep = 1;
-			this.maxSpeed = 3;
+			this.moveStep = .5;
+			this.maxSpeed = 2;
 			this.isReady = false;
 			this.currentSprite = 0;
+			this.spriteFrequency = 200; //in milliseconds
+			this.elapsedTime = 0;
+			this.lastTime = new Date();
 
 			this.upPressed = false,
 			this.downPressed = false,
 			this.rightPressed = false,
 			this.leftPressed = false;
+			this.previousPressed = "right";
 
 			this.image = new Image();
 			this.image.src = "assets/OrcExample.png";
 			this.image.onload = function() {
 				this.isReady = true;
-				this.runningDown = new Sprite(this.image, 40, 40, [[0, 0], [40, 0], [80, 0]]);
-				this.runningRight = new Sprite(this.image, 40, 40, [[0, 40], [40, 40], [80, 40]]);
-				this.runningUp = new Sprite(this.image, 40, 40, [[0, 80], [40, 80], [80, 80]]);
-				this.runningLeft = new Sprite(this.image, 40, 40, [[0, 120], [40, 120], [80, 120]]);
+				this.runningDown = new Sprite(this.image, 40, 40, [
+					[0, 0],
+					[40, 0],
+					[80, 0]
+				]);
+				this.runningRight = new Sprite(this.image, 40, 40, [
+					[0, 40],
+					[40, 40],
+					[80, 40]
+				]);
+				this.runningUp = new Sprite(this.image, 40, 40, [
+					[0, 80],
+					[40, 80],
+					[80, 80]
+				]);
+				this.runningLeft = new Sprite(this.image, 40, 40, [
+					[0, 120],
+					[40, 120],
+					[80, 120]
+				]);
 			}.bind(this);
 
 			document.addEventListener("keydown", this.handleKeyDown.bind(this))
@@ -155,17 +175,53 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		PlayerEntity.prototype = {
 
 			draw: function(context) {
-				if (this.isReady) {
-					
-					this.runningUp.draw(0, this.position.x, this.position.y);
-					// this.runningDown.draw(0, this.position.x, this.position.y);
-					// this.runningRight.draw(0, this.position.x, this.position.y);
-					// this.runningLeft.draw(0, this.position.x, this.position.y);
 
-					// this.currentSprite++;
-					// if (this.currentSprite > 2) this.currentSprite = 0;
+				if (this.isMoving()) {
+					var currentTime = new Date();
+					this.elapsedTime = currentTime - this.lastTime + this.elapsedTime;
+
+					if (this.elapsedTime > this.spriteFrequency) {
+						this.elapsedTime = this.elapsedTime - this.spriteFrequency;
+						this.currentSprite++
+						if (this.currentSprite > 2) this.currentSprite = 0;
+					}
+
+					this.lastTime = new Date();
+				} else {
+					this.currentSprite = 1;
+				}
+
+
+
+				if (this.isReady) {
+					switch (this.previousPressed) {
+						case "up":
+							this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
+							break;
+						case "right":
+							this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
+							break;
+						case "down":
+							this.runningDown.draw(this.currentSprite, this.position.x, this.position.y);
+							break;
+						case "left":
+							this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
+							break;
+					}
 				}
 			},
+
+			isMoving: function() {
+
+				if (this.velocity.x > .2) return true;
+				if (this.velocity.x < -.2) return true;
+				if (this.velocity.y < -.2) return true;
+				if (this.velocity.y > .2) return true;
+
+				return false;
+
+			},
+
 			update: function() {
 				this.handleControls()
 				this.velocity.sMultiplyEq(physics.groundFriction)
@@ -191,20 +247,22 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 
 			handleKeyDown: function(e) {
 
-				console.log(this.upPressed)
-
 				switch (e.which) {
 					case 87:
 						this.upPressed = true;
+						this.previousPressed = "up"
 						break;
 					case 83:
 						this.downPressed = true;
+						this.previousPressed = "down"
 						break;
 					case 68:
 						this.rightPressed = true;
+						this.previousPressed = "right"
 						break;
 					case 65:
 						this.leftPressed = true;
+						this.previousPressed = "left"
 						break;
 				}
 
@@ -273,8 +331,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		function update(elapsed) {
 			//get data from server here?
 
-			for (var id in worldObjects)
-			{
+			for (var id in worldObjects) {
 				worldObjects[id].update(elapsed);
 			}
 		}
