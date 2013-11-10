@@ -129,7 +129,6 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 		}
 
 		function draw(elapsed) {
-			Isometric.view(this.player.position.x, this.player.position.y, 1.0, 0.5, 1.0, canvas.width, canvas.height);
 
 			tileMap.draw(elapsed, this.context);
 

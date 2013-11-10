@@ -53,6 +53,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 		draw: function(context) {
 
+
 			if (this.isMoving()) {
 				var currentTime = new Date();
 				this.elapsedTime = currentTime - this.lastTime + this.elapsedTime;
@@ -78,7 +79,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 				// this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
 				// this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
-				this.runningDown.draw(this.currentSprite, this.position.x, this.position.y);
+				this.runningDown.draw(this.currentSprite, x, y);
 				// this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
 			}
 

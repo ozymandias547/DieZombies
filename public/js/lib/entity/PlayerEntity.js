@@ -55,7 +55,9 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 		draw: function(context) {
 
-			if (this.isMoving()) {
+			Iso.view(this.position.x, this.position.y, 1.0, 0.5, 1.0, canvas.width, canvas.height);
+
+			if (this.isMoving(.2)) {
 				var currentTime = new Date();
 				this.elapsedTime = currentTime - this.lastTime + this.elapsedTime;
 
@@ -91,13 +93,11 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 			}
 		},
 
-		isMoving: function() {
-
-			if (this.velocity.x > .2) return true;
-			if (this.velocity.x < -.2) return true;
-			if (this.velocity.y < -.2) return true;
-			if (this.velocity.y > .2) return true;
-
+		isMoving: function(threshold) {
+			if (this.velocity.x > threshold) return true;
+			if (this.velocity.x < -(threshold)) return true;
+			if (this.velocity.y < -(threshold)) return true;
+			if (this.velocity.y > threshold) return true;
 			return false;
 
 		},
