@@ -1,4 +1,4 @@
-define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Isometric) {
+define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Iso) {
 
 	var EnemyEntity = function(x, y, color, radius) {
 		Entity().constructor.call(this, x, y, color);
@@ -68,7 +68,10 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 				this.currentSprite = 1;
 			}
 
+			var x = Iso.pX(this.position.x, this.position.y);
+			var y = Iso.pY(this.position.x, this.position.y, 0);
 
+			
 
 			if (this.isReady) {
 
@@ -92,7 +95,6 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		update: function(elapsedTime, worldObjects) {
 
 			//follow the player
-			console.log(world)
 
 			this.velocity.sMultiplyEq(this.groundFriction)
 			this.velocity.sRestrictEq(this.maxSpeed);

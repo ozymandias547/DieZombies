@@ -3,7 +3,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 	var PlayerEntity = function(x, y, color, radius) {
 		Entity().constructor.call(this, x, y, color);
 		this.radius = radius;
-		this.moveStep = .5;
+		this.moveStep = 1;
 		this.maxSpeed = 2;
 		this.isReady = false;
 		this.currentSprite = 0;
@@ -112,16 +112,20 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		handleControls: function() {
 
 			if (this.upPressed) {
+				this.velocity.x += this.moveStep;
 				this.velocity.y -= this.moveStep;
 			}
 			if (this.downPressed) {
+				this.velocity.x -= this.moveStep;
 				this.velocity.y += this.moveStep;
 			}
 			if (this.rightPressed) {
 				this.velocity.x += this.moveStep;
+				this.velocity.y += this.moveStep;
 			}
 			if (this.leftPressed) {
 				this.velocity.x -= this.moveStep;
+				this.velocity.y -= this.moveStep;
 			}
 		},
 
