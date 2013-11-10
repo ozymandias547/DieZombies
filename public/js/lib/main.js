@@ -4,10 +4,15 @@
  		"jquery": "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
  		"fitViewportToRatio": "lib/fitViewportToRatio",
  		"dieZombieEngine": "lib/dieZombieEngine",
- 		"vec2" : "lib/vec2",
- 		"tileMap" : "lib/map/tileMap",
- 		"grass" : "lib/map/grass"
- 		},
+ 		"vec2": "lib/vec2",
+ 		"tileMap": "lib/map/tileMap",
+ 		"grass": "lib/map/grass",
+ 		"Entity": "lib/entity/Entity",
+ 		"PlayerEntity": "lib/entity/PlayerEntity",
+ 		"CircleEntity": "lib/entity/CircleEntity",
+ 		"EnemyEntity": "lib/entity/EnemyEntity",
+ 		"Sprite": "lib/Sprite"
+ 	},
  	waitSeconds: 15
  });
 
