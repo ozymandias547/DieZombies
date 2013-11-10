@@ -45,6 +45,10 @@ define(function() {
 			return this;
 		};
 
+		this.sMultiply = function(s) {
+			return new Vec3(this.x * s, this.y * s, this.z * s);
+		};
+
 		this.reverse = function() {
 			this.x = -this.x;
 			this.y = -this.y;

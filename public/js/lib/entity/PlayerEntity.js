@@ -1,10 +1,10 @@
-define(["Entity", "vec3", "Sprite", "dieZombieEngine", "isometric"], function(Entity, Vec3, Sprite, Engine, Iso) {
-
-	var PlayerEntity = function(x, y, color, radius) {
+define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite, Iso) {
+	var PlayerEntity = function(x, y, color, radius, engine) {
 		Entity().constructor.call(this, x, y, color);
+		this.engine = engine;
 		this.radius = radius;
-		this.moveStep = 1;
-		this.maxSpeed = 2;
+		this.moveStep = 5000;
+		this.maxSpeed = 1000;
 		this.isReady = false;
 		this.currentSprite = 0;
 		this.spriteFrequency = 200; //in milliseconds
@@ -52,8 +52,7 @@ define(["Entity", "vec3", "Sprite", "dieZombieEngine", "isometric"], function(En
 	PlayerEntity.prototype.constructor = PlayerEntity;
 
 	PlayerEntity.prototype = {
-
-		draw: function(context) {
+		draw: function(elapsed, context) {
 
 			if (this.isMoving()) {
 				var currentTime = new Date();
@@ -76,16 +75,16 @@ define(["Entity", "vec3", "Sprite", "dieZombieEngine", "isometric"], function(En
 			if (this.isReady) {
 				switch (this.previousPressed) {
 					case "up":
-						this.runningUp.draw(this.currentSprite, x, y);
+						this.runningUp.draw(context, this.currentSprite, x, y);
 						break;
 					case "right":
-						this.runningRight.draw(this.currentSprite, x, y);
+						this.runningRight.draw(context, this.currentSprite, x, y);
 						break;
 					case "down":
-						this.runningDown.draw(this.currentSprite, x, y);
+						this.runningDown.draw(context, this.currentSprite, x, y);
 						break;
 					case "left":
-						this.runningLeft.draw(this.currentSprite, x, y);
+						this.runningLeft.draw(context, this.currentSprite, x, y);
 						break;
 				}
 			}
@@ -105,12 +104,12 @@ define(["Entity", "vec3", "Sprite", "dieZombieEngine", "isometric"], function(En
 			this.handleControls(elapsed);
 			this.velocity.sMultiplyEq(this.groundFriction)
 			this.velocity.sRestrictEq(this.maxSpeed);
-			this.position.vPlusEq(this.velocity);
+			this.position.vPlusEq(this.velocity.sMultiply(elapsed));
 
-			this.tile = Engine.tileMap.getTileAt(this.position.x, this.position.y);
+			this.tile = this.engine.tileMap.getTileAt(this.position.x, this.position.y);
 		},
 
-		handleControls: function() {
+		handleControls: function(elapsed) {
 
 			if (this.upPressed) {
 				this.velocity.x += this.moveStep * elapsed;
@@ -168,7 +167,7 @@ define(["Entity", "vec3", "Sprite", "dieZombieEngine", "isometric"], function(En
 		}
 	};
 
-	return function(x, y, color, radius) {
-		return new PlayerEntity(x, y, color, radius);
+	return function(x, y, color, radius, engine) {
+		return new PlayerEntity(x, y, color, radius, engine);
 	}
 });

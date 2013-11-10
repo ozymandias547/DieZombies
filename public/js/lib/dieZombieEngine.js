@@ -1,5 +1,5 @@
-define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
-	function (fitViewportToRatio, Vec2, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric)
+define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
+	function (fitViewportToRatio, Vec3, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric)
 	{
 		var DieZombieEngine = function()
 		{
@@ -10,6 +10,9 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.isMouseDown = false;
 			this.lastTime = 0;
 			this.tileMap = new TileMap(15, 15, 60, 60);
+			this.frameRateElapsed = 0;
+			this.frameRate = 0;
+			this.frameCount = 0;
 
 			/* ---- INITIALZING ----------------------------- */
 
@@ -39,13 +42,13 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.buildFixtureData = function(obj) {
 				for (var id in obj) {	
 					if (obj[id].role == "player") 
-						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y,"red", obj[id].radius)
+						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y,"red", obj[id].radius, this);
 
 					if (obj[id].role == "circle") 
-						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y,"red", obj[id].radius)
+						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y,"red", obj[id].radius);
 
 					if (obj[id].role == "enemy")
-						this.worldObjects[id] = EnemyFactory(obj[id].x, obj[id].y, "red", obj[id].radius)
+						this.worldObjects[id] = EnemyFactory(obj[id].x, obj[id].y, "red", obj[id].radius);
 				}
 			}
 
@@ -76,9 +79,10 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			}
 
 			this.bindInput = function() {
+				var self = this;
 				document.addEventListener("mousedown", function(e) {
 					this.isMouseDown = true;
-					this.handleMouseMove(e);
+					handleMouseMove(e);
 					document.addEventListener("mousemove", handleMouseMove, true);
 				}, true);
 
@@ -91,25 +95,29 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 
 				function handleMouseMove(e) {
 					var position = $("#canvas").position();
-					this.mouseX = (((e.clientX - this.canvas.getBoundingClientRect().left) - position.left)) / fitViewportToRatio.getScalar();
-					this.mouseY = (((e.clientY - this.canvas.getBoundingClientRect().top) - position.top)) / fitViewportToRatio.getScalar();
+					this.mouseX = (((e.clientX - self.canvas.getBoundingClientRect().left) - position.left)) / fitViewportToRatio.getScalar();
+					this.mouseY = (((e.clientY - self.canvas.getBoundingClientRect().top) - position.top)) / fitViewportToRatio.getScalar();
 				};
 			}
 
 			/* ---- GAME LOOP ----------------------------- */
 
 			this.start = function() {
+				var self = this;
+
 				(function loop(animStart) {
-					this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+					self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
 
-					var elapsed = this.lastTime ? (new Date().getTime() - this.lastTime) / 1000.0 : 0.0;
+					self.elapsed = self.lastTime ? (new Date().getTime() - self.lastTime) / 1000.0 : 0.0;
 
-					this.update(elapsed);
-					this.draw(elapsed);
+					self.elapsed = self.elapsed > 0.05 ? 0.05 : self.elapsed;
 
-					this.lastTime = new Date().getTime();
+					self.update(self.elapsed);
+					self.draw(self.elapsed);
 
-					this.requestAnimFrame(loop);
+					self.lastTime = new Date().getTime();
+
+					window.requestAnimFrame(loop);
 				})();
 			}
 
@@ -120,13 +128,27 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			}
 
 			this.draw = function(elapsed) {
+				this.frameRateElapsed += elapsed;
+				this.frameCount++;
+
+				if (this.frameRateElapsed >= 1.0)
+				{
+					this.frameRate = (1.0 / this.frameRateElapsed) * this.frameCount;
+
+					this.frameRateElapsed = this.frameCount = 0;
+				}
+
 				Isometric.view(this.player.position.x, this.player.position.y, 1.0, 0.5, 1.0, this.canvas.width, this.canvas.height);
 
-				tileMap.draw(this.elapsed, this.context);
+				this.tileMap.draw(this.elapsed, this.context);
 
 				for (var id in this.worldObjects) {
 					this.worldObjects[id].draw(elapsed, this.context);
 				}
+
+				this.context.font="20px Arial";
+				this.context.fillText("FPS: " + Math.round(this.frameRate).toString(10),5,50);
+				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10),5,100);
 			}
 		}
 
