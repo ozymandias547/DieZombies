@@ -1,11 +1,14 @@
-define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'PlayerEntity'],
-	function(fitViewportToRatio, Vec2, TileMap, Entity, CircleEntity, PlayerEntity) {
+define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'PlayerEntity', 'isometric'],
+	function(fitViewportToRatio, Vec2, TileMap, Entity, CircleEntity, PlayerEntity, Isometric) {
+
 
 		var canvas = null,
 			worldObjects = {},
 			mouseX, mouseY, isMouseDown,
 			lastTime = 0,
 			tileMap = new TileMap(15, 15, 60, 60);
+
+		Isometric.view(2, 0, 0, 1.0, 1.0)
 
 		/* ---- INITIALZING ----------------------------- */
 
@@ -17,8 +20,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'Play
 			buildFixtureData({
 				"player1": {
 					role: "player",
-					x: canvas.width / 2,
-					y: canvas.height / 2,
+					x: 100,
+					y: 100,
 					radius: 20,
 					color: "green"
 				},
@@ -91,6 +94,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'Play
 				mouseY = (((e.clientY - canvas.getBoundingClientRect().top) - position.top)) / fitViewportToRatio.getScalar();
 			};
 		}
+
 
 
 

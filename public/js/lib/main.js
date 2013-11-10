@@ -11,8 +11,10 @@
  		"PlayerEntity": "lib/entity/PlayerEntity",
  		"CircleEntity": "lib/entity/CircleEntity",
  		"EnemyEntity": "lib/entity/EnemyEntity",
- 		"Sprite": "lib/Sprite"
+ 		"Sprite": "lib/Sprite",
+ 		"isometric" : "lib/map/isometric"
  	},
+
  	waitSeconds: 15
  });
 
