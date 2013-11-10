@@ -11,6 +11,7 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.frameRateElapsed = 0;
 			this.frameRate = 0;
 			this.frameCount = 0;
+			this.frameCap = 60;
 
 			/* ---- INITIALZING ----------------------------- */
 
@@ -67,13 +68,13 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.buildFixtureData = function(obj) {
 				for (var id in obj) {
 					if (obj[id].role == "player")
-						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y, "red", obj[id].radius, this);
+						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius, this);
 
 					if (obj[id].role == "circle")
-						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y, "red", obj[id].radius);
+						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius);
 
 					if (obj[id].role == "enemy")
-						this.worldObjects[id] = EnemyFactory(obj[id].x, obj[id].y, "red", obj[id].radius);
+						this.worldObjects[id] = EnemyFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius);
 				}
 			}
 
@@ -133,14 +134,20 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				(function loop(animStart) {
 					self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
 
-					self.elapsed = self.lastTime ? (new Date().getTime() - self.lastTime) / 1000.0 : 0.0;
+					self.elapsed = self.lastTime > 0 ? ((new Date().getTime() - self.lastTime) / 1000.0) : 0.0;
+					
+					if (self.elapsed == 0 && self.lastTime)
+					{
+						window.requestAnimFrame(loop);
+						return;
+					}
+
+					self.lastTime = new Date().getTime();
 
 					self.elapsed = self.elapsed > 0.05 ? 0.05 : self.elapsed;
 
 					self.update(self.elapsed);
 					self.draw(self.elapsed);
-
-					self.lastTime = new Date().getTime();
 
 					window.requestAnimFrame(loop);
 				})();

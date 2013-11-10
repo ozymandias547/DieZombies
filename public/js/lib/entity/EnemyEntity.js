@@ -77,7 +77,7 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 
 				// this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
 				// this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
-				this.runningDown.draw(context, this.currentSprite, this.position.x, this.position.y);
+				this.runningDown.draw(context, this.currentSprite, x, y);
 				// this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
 			}
 
@@ -92,7 +92,7 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 				this.velocity.z < -0.2;
 		},
 
-		update: function(elapsedTime, worldObjects) {
+		update: function(elapsed, worldObjects) {
 
 			//follow the player
 			//find angle between enemy and player (get direction)
@@ -105,15 +105,15 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 			this.direction.normalize();
 			this.direction.sMultiplyEq(this.speed);
 			this.velocity = this.direction;
-			this.position.vPlusEq(this.velocity);
+			this.position.vPlusEq(this.velocity * elapsed);
 			
 		}
 
 
 	}
 
-	return function(x, y, color, radius) {
-		return new EnemyEntity(x, y, color, radius)
+	return function(x, y, z, color, radius) {
+		return new EnemyEntity(x, y, z, color, radius)
 	}
 
 });

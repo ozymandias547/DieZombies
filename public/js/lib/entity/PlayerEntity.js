@@ -1,9 +1,9 @@
 define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite, Iso) {
-	var PlayerEntity = function(x, y, color, radius, engine) {
-		Entity().constructor.call(this, x, y, color);
+	var PlayerEntity = function(x, y, z, color, radius, engine) {
+		Entity().constructor.call(this, x, y, z, color);
 		this.engine = engine;
 		this.radius = radius;
-		this.moveStep = 5000;
+		this.moveStep = 500;
 		this.maxSpeed = 1000;
 		this.isReady = false;
 		this.currentSprite = 0;
@@ -169,7 +169,7 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 		}
 	};
 
-	return function(x, y, color, radius, engine) {
-		return new PlayerEntity(x, y, color, radius, engine);
+	return function(x, y, z, color, radius, engine) {
+		return new PlayerEntity(x, y, z, color, radius, engine);
 	}
 });
