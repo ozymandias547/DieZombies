@@ -6,7 +6,8 @@
  		"dieZombieEngine": "lib/dieZombieEngine",
  		"vec2" : "lib/vec2",
  		"tileMap" : "lib/map/tileMap",
- 		"grass" : "lib/map/grass"
+ 		"grass" : "lib/map/grass",
+ 		"isometric" : "lib/map/isometric"
  		},
  	waitSeconds: 15
  });

@@ -1,11 +1,13 @@
-define(['fitViewportToRatio', 'vec2', 'tileMap'],
-	function(fitViewportToRatio, Vec2, TileMap) {
+define(['fitViewportToRatio', 'vec2', 'tileMap', 'isometric'],
+	function(fitViewportToRatio, Vec2, TileMap, Isometric) {
 
 		var canvas = null,
 			worldObjects = {},
 			mouseX, mouseY, isMouseDown,
 			lastTime = 0,
 			tileMap = new TileMap(15, 15, 60, 60);
+
+		Isometric.view(2, 0, 0, 1.0, 1.0)
 
 		/* ---- INITIALZING ----------------------------- */
 
@@ -17,8 +19,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			buildFixtureData({
 				"player1": {
 					role: "player",
-					x: canvas.width / 2,
-					y: canvas.height / 2,
+					x: 100,
+					y: 100,
 					radius: 20,
 					color: "green"
 				},
@@ -201,21 +203,22 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 					this.currentSprite = 1;
 				}
 
-
+				var _x = Isometric.pX(this.position.x, this.position.y);
+				var _y = Isometric.pY(this.position.x, this.position.y, 0);
 
 				if (this.isReady) {
 					switch (this.previousPressed) {
 						case "up":
-							this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
+							this.runningUp.draw(this.currentSprite, _x, _y);
 							break;
 						case "right":
-							this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
+							this.runningRight.draw(this.currentSprite, _x, _y);
 							break;
 						case "down":
-							this.runningDown.draw(this.currentSprite, this.position.x, this.position.y);
+							this.runningDown.draw(this.currentSprite, _x, _y);
 							break;
 						case "left":
-							this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
+							this.runningLeft.draw(this.currentSprite, _x, _y);
 							break;
 					}
 				}

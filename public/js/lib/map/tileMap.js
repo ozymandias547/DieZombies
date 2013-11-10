@@ -31,9 +31,9 @@ define(["grass"], function (Grass) {
 				return this._x + ", " + this._y;
 			};
 
-			this.draw = function(elapsed, context, pixX, pixY, pixW, pixH)
+			this.draw = function(elapsed, context, x, y, w, h)
 			{
-				this._renderer.draw(elapsed, context, pixX, pixY, pixW, pixH);
+				this._renderer.draw(elapsed, context, x, y, w, h);
 			};
 
 			this.update = function(elapsed)
