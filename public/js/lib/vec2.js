@@ -17,6 +17,13 @@ define(function() {
 			return this;
 		}
 
+		this.sRestrictEq = function(s) {
+			if (this.x > s) this.x = s;
+			if (this.y > s) this.y = s;
+			if (this.x < -(s)) this.x = -(s);
+			if (this.y < -(s)) this.y = -(s);
+		}
+
 		this.vPlusEq = function(v) {
 			this.x += v.x;
 			this.y += v.y;

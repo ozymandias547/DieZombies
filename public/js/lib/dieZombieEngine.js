@@ -128,11 +128,18 @@ define(['fitViewportToRatio', 'vec2'],
 			this.radius = radius;
 			this.moveStep = 1;
 			this.maxSpeed = 3;
+			this.isReady = false;
 
 			this.upPressed = false,
 			this.downPressed = false,
 			this.rightPressed = false,
 			this.leftPressed = false;
+
+			this.image = new Image();
+			this.image.src = "assets/OrcExample.png";
+			this.image.onload = function() {
+				this.isReady = true;
+			}.bind(this);
 
 			 //needs to be throttled
 			document.addEventListener("keydown", this.handleKeyDown.bind(this))
@@ -142,23 +149,16 @@ define(['fitViewportToRatio', 'vec2'],
 		}
 
 		PlayerEntity.prototype = {
+
 			draw: function() {
-				context.fillStyle = this.color;
-				context.beginPath();
-				context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, true);
-				context.closePath();
-				context.fill();
+				if (this.isReady) {
+					context.drawImage(this.image, this.position.x, this.position.y);
+				}
 			},
 			update: function() {
 				this.handleControls() 
 				this.velocity.sMultiplyEq(physics.groundFriction)
-
-				if (this.velocity.x > this.maxSpeed) this.velocity.x = this.maxSpeed;
-				if (this.velocity.y > this.maxSpeed) this.velocity.y = this.maxSpeed;
-				if (this.velocity.x < -(this.maxSpeed)) this.velocity.x = -(this.maxSpeed);
-				if (this.velocity.y < -(this.maxSpeed)) this.velocity.y = -(this.maxSpeed);
-
-
+				this.velocity.sRestrictEq(this.maxSpeed);
 				this.position.vPlusEq(this.velocity)
 			},
 
