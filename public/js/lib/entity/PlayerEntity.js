@@ -1,4 +1,4 @@
-define(["Entity", "vec2", "Sprite"], function(Entity, Vec2, Sprite) {
+define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Iso) {
 
 	var PlayerEntity = function(x, y, color, radius) {
 		Entity().constructor.call(this, x, y, color);
@@ -70,21 +70,22 @@ define(["Entity", "vec2", "Sprite"], function(Entity, Vec2, Sprite) {
 				this.currentSprite = 1;
 			}
 
-
+			var x = Iso.pX(this.position.x, this.position.y);
+			var y = Iso.pY(this.position.x, this.position.y, 0);
 
 			if (this.isReady) {
 				switch (this.previousPressed) {
 					case "up":
-						this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
+						this.runningUp.draw(this.currentSprite, x, y);
 						break;
 					case "right":
-						this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
+						this.runningRight.draw(this.currentSprite, x, y);
 						break;
 					case "down":
-						this.runningDown.draw(this.currentSprite, this.position.x, this.position.y);
+						this.runningDown.draw(this.currentSprite, x, y);
 						break;
 					case "left":
-						this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
+						this.runningLeft.draw(this.currentSprite, x, y);
 						break;
 				}
 			}

@@ -1,6 +1,4 @@
-define(["Entity"], function(Entity) {
-
-
+define(["Entity", "isometric"], function(Entity, Iso) {
 	var CircleEntity = function(x, y, color, radius) {
 		Entity().constructor.call(this, x, y, color);
 		this.radius = radius;
@@ -13,7 +11,7 @@ define(["Entity"], function(Entity) {
 		draw: function(elapsedTime, context) {
 			context.fillStyle = this.color;
 			context.beginPath();
-			context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, true);
+			context.arc(Iso.pX(this.position.x, this.position.y), Iso.pY(this.position.x, this.position.y), this.radius, 0, Math.PI * 2, true);
 			context.closePath();
 			context.fill();
 		},

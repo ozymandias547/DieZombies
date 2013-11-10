@@ -1,4 +1,4 @@
-define(["Entity", "vec2", "Sprite"], function(Entity, Vec2, Sprite) {
+define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Isometric) {
 
 	var EnemyEntity = function(x, y, color, radius) {
 		Entity().constructor.call(this, x, y, color);
