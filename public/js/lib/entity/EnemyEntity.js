@@ -1,7 +1,7 @@
-define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Iso) {
+define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Entity, Vec3, Sprite, Engine, Iso) {
 
-	var EnemyEntity = function(x, y, color, radius) {
-		Entity().constructor.call(this, x, y, color);
+	var EnemyEntity = function(x, y, z, color, radius) {
+		Entity().constructor.call(this, x, y, z, color);
 		this.radius = radius;
 		this.moveStep = .5;
 		this.isReady = false;
@@ -10,7 +10,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		this.elapsedTime = 0;
 		this.lastTime = new Date();
 
-		this.direction = new Vec2(1,1);
+		this.direction = new Vec3(1,1, 0);
 		this.speed = .5;
 
 		this.upPressed = false,
@@ -44,8 +44,6 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 				[80, 120]
 			]);
 		}.bind(this);
-
-
 	}
 
 	EnemyEntity.prototype = Entity();
@@ -53,7 +51,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 	EnemyEntity.prototype = {
 
-		draw: function(context) {
+		draw: function(elapsed, context) {
 
 
 			if (this.isMoving()) {
@@ -72,27 +70,26 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 			}
 
 			var x = Iso.pX(this.position.x, this.position.y);
-			var y = Iso.pY(this.position.x, this.position.y, 0);
-
-			
+			var y = Iso.pY(this.position.x, this.position.y, this.position.z);
 
 			if (this.isReady) {
 
 
 				// this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
 				// this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
-				this.runningDown.draw(this.currentSprite, x, y);
+				this.runningDown.draw(context, this.currentSprite, this.position.x, this.position.y);
 				// this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
 			}
 
 		},
 
 		isMoving: function() {
-			if (this.velocity.x > .2) return true;
-			if (this.velocity.x < -.2) return true;
-			if (this.velocity.y < -.2) return true;
-			if (this.velocity.y > .2) return true;
-			return false;
+			return this.velocity.x > 0.2 ||
+				this.velocity.x < -0.2 ||
+				this.velocity.y < -0.2 ||
+				this.velocity.y > 0.2 ||
+				this.velocity.z > 0.2 ||
+				this.velocity.z < -0.2;
 		},
 
 		update: function(elapsedTime, worldObjects) {

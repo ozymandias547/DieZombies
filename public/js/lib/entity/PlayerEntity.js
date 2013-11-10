@@ -1,10 +1,10 @@
-define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite, Iso) {
-
-	var PlayerEntity = function(x, y, color, radius) {
+define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite, Iso) {
+	var PlayerEntity = function(x, y, color, radius, engine) {
 		Entity().constructor.call(this, x, y, color);
+		this.engine = engine;
 		this.radius = radius;
-		this.moveStep = 1;
-		this.maxSpeed = 3;
+		this.moveStep = 5000;
+		this.maxSpeed = 1000;
 		this.isReady = false;
 		this.currentSprite = 0;
 		this.spriteFrequency = 200; //in milliseconds
@@ -19,6 +19,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 		this.image = new Image();
 		this.image.src = "assets/GirlDarkExample.png";
+
 		this.image.onload = function() {
 			this.isReady = true;
 			this.runningDown = new Sprite(this.image, 40, 40, [
@@ -45,15 +46,13 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 
 		document.addEventListener("keydown", this.handleKeyDown.bind(this))
 		document.addEventListener("keyup", this.handleKeyUp.bind(this))
-
 	}
 
 	PlayerEntity.prototype = Entity();
 	PlayerEntity.prototype.constructor = PlayerEntity;
 
 	PlayerEntity.prototype = {
-
-		draw: function(context) {
+		draw: function(elapsed, context) {
 
 			Iso.view(this.position.x, this.position.y, 1.0, 0.5, 1.0, canvas.width, canvas.height);
 
@@ -73,84 +72,85 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 			}
 
 			var x = Iso.pX(this.position.x, this.position.y);
-			var y = Iso.pY(this.position.x, this.position.y, 0);
+			var y = Iso.pY(this.position.x, this.position.y, this.position.z);
 
 			if (this.isReady) {
 				switch (this.previousPressed) {
 					case "up":
-						this.runningUp.draw(this.currentSprite, x, y);
+						this.runningUp.draw(context, this.currentSprite, x, y);
 						break;
 					case "right":
-						this.runningRight.draw(this.currentSprite, x, 	y);
+						this.runningRight.draw(context, this.currentSprite, x, y);
 						break;
 					case "down":
-						this.runningDown.draw(this.currentSprite, x, y);
+						this.runningDown.draw(context, this.currentSprite, x, y);
 						break;
 					case "left":
-						this.runningLeft.draw(this.currentSprite, x, y);
+						this.runningLeft.draw(context, this.currentSprite, x, y);
 						break;
 				}
 			}
 		},
 
-		isMoving: function(threshold) {
-			if (this.velocity.x > threshold) return true;
-			if (this.velocity.x < -(threshold)) return true;
-			if (this.velocity.y < -(threshold)) return true;
-			if (this.velocity.y > threshold) return true;
-			return false;
-
+		isMoving: function() {
+			return this.velocity.x > this.threshold ||
+				this.velocity.x < -this.threshold ||
+				this.velocity.y > this.threshold ||
+				this.velocity.y < -this.threshold ||
+				this.velocity.z > this.threshold ||
+				this.velocity.z < -this.threshold;
 		},
 
 		update: function(elapsed, worldObjects) {
-			this.handleControls()
+
+			this.handleControls(elapsed);
 			this.velocity.sMultiplyEq(this.groundFriction)
 			this.velocity.sRestrictEq(this.maxSpeed);
-			this.position.vPlusEq(this.velocity)
+			this.position.vPlusEq(this.velocity.sMultiply(elapsed));
+
+			this.tile = this.engine.tileMap.getTileAt(this.position.x, this.position.y);
 		},
 
-		handleControls: function() {
+		handleControls: function(elapsed) {
 
 			if (this.upPressed) {
-				this.velocity.x += this.moveStep;
-				this.velocity.y -= this.moveStep;
+				this.velocity.x += this.moveStep * elapsed;
+				this.velocity.y -= this.moveStep * elapsed;
+			} else if (this.downPressed) {
+				this.velocity.x -= this.moveStep * elapsed;
+				this.velocity.y += this.moveStep * elapsed;
 			}
-			if (this.downPressed) {
-				this.velocity.x -= this.moveStep;
-				this.velocity.y += this.moveStep;
-			}
+
 			if (this.rightPressed) {
-				this.velocity.x += this.moveStep;
-				this.velocity.y += this.moveStep;
-			}
-			if (this.leftPressed) {
-				this.velocity.x -= this.moveStep;
-				this.velocity.y -= this.moveStep;
+				this.velocity.x += this.moveStep * elapsed;
+				this.velocity.y += this.moveStep * elapsed;
+			} else if (this.leftPressed) {
+				this.velocity.x -= this.moveStep * elapsed;
+				this.velocity.y -= this.moveStep * elapsed;
 			}
 		},
 
 		handleKeyDown: function(e) {
-
 			switch (e.which) {
 				case 87:
 					this.upPressed = true;
-					this.previousPressed = "up"
+					this.previousPressed = "up";
 					break;
 				case 83:
 					this.downPressed = true;
-					this.previousPressed = "down"
+					this.previousPressed = "down";
 					break;
 				case 68:
 					this.rightPressed = true;
-					this.previousPressed = "right"
+					this.previousPressed = "right";
 					break;
 				case 65:
 					this.leftPressed = true;
-					this.previousPressed = "left"
+					this.previousPressed = "left";
 					break;
 			}
-
 		},
+
 		handleKeyUp: function(e) {
 			switch (e.which) {
 				case 87:
@@ -167,10 +167,9 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 					break;
 			}
 		}
-	}
+	};
 
-	return function(x, y, color, radius) {
-		return new PlayerEntity(x, y, color, radius)
+	return function(x, y, color, radius, engine) {
+		return new PlayerEntity(x, y, color, radius, engine);
 	}
-
 });
