@@ -1,5 +1,5 @@
 define(["grass"], function (Grass) {
-	return function TileMap(width = 15, height = 15, tileWidth = 50, tileHeight = 50)
+	return function TileMap(width, height, tileWidth, tileHeight)
 	{
 		this._tileWidth = tileWidth;
 		this._tileHeight = tileHeight;

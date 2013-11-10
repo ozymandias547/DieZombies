@@ -5,7 +5,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			worldObjects = {},
 			mouseX, mouseY, isMouseDown,
 			lastTime = 0,
-			tileMap = new TileMap();
+			tileMap = new TileMap(15, 15, 60, 60);
 
 		/* ---- INITIALZING ----------------------------- */
 
@@ -17,10 +17,17 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			buildFixtureData({
 				"player1": {
 					role: "player",
-					x: 50,
-					y: 50,
+					x: canvas.width / 2,
+					y: canvas.height / 2,
 					radius: 20,
 					color: "green"
+				},
+				"circle": {
+					role: "circle",
+					x: 100,
+					y: 100,
+					radius: 30,
+					color: "red"
 				}
 			});
 
@@ -83,7 +90,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 
 		var physics = {
 			gravity: new Vec2(0, 0), //unrealistic, but hey it's a game!
-			groundFriction: 0.9
+			groundFriction: 0.92
 		}
 
 		/* ---- ENTITIES ----------------------------- */
@@ -111,10 +118,10 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		}
 
 		CircleEntity.prototype = {
-			draw: function(context) {
+			draw: function(elapsedTime, context) {
 				context.fillStyle = this.color;
 				context.beginPath();
-				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+				context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, true);
 				context.closePath();
 				context.fill();
 			},
@@ -122,6 +129,9 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 
 			}
 		}
+
+		CircleEntity.prototype = new Entity();
+		CircleEntity.prototype.constructor = CircleEntity; 
 
 		var PlayerEntity = function(x, y, color, radius) {
 			Entity.call(this, x, y, color);
@@ -169,8 +179,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			document.addEventListener("keydown", this.handleKeyDown.bind(this))
 			document.addEventListener("keyup", this.handleKeyUp.bind(this))
 
-
 		}
+
 
 		PlayerEntity.prototype = {
 
@@ -285,6 +295,9 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			}
 		}
 
+		PlayerEntity.prototype = new Entity();
+		PlayerEntity.prototype.constructor = PlayerEntity;
+
 		/* ---- SPRITE SHEETS ----------------------------- */
 
 		function Sprite(img, width, height, positions) {
@@ -328,6 +341,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			})();
 		}
 
+
+
 		function update(elapsed) {
 			//get data from server here?
 
@@ -339,8 +354,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		function draw(elapsed) {
 			tileMap.draw(elapsed, this.context);
 
-			for (var id in worldObjects)
-			{
+			for (var id in worldObjects) {
 				worldObjects[id].draw(elapsed, this.context);
 			}
 		}
