@@ -1,5 +1,5 @@
-define(['fitViewportToRatio'],
-	function(fitViewportToRatio) {
+define(['fitViewportToRatio', 'vec2'],
+	function(fitViewportToRatio, Vec2) {
 
 		var canvas = null,
 			worldObjects = {},
@@ -81,10 +81,20 @@ define(['fitViewportToRatio'],
 
 		/* ---- ENTITIES ----------------------------- */
 
+		var physics = {
+			gravity : new Vec2(0,0),	//unrealistic, but hey it's a game!
+			groundFriction : .9
+		}
+
+		/* ---- ENTITIES ----------------------------- */
+
 		var Entity = function(x, y, color) {
 			color = color || "red";
-			this.x = x;
-			this.y = y;
+			
+			this.position = new Vec2(x, y);
+			this.velocity = new Vec2(0, 0);
+			this.acceleration = 0;			
+			
 			this.color = color;
 		}
 
@@ -116,93 +126,96 @@ define(['fitViewportToRatio'],
 		var PlayerEntity = function(x, y, color, radius) {
 			Entity.call(this, x, y, color);
 			this.radius = radius;
-			
-			var upPressed = false,
-			 	downPressed = false,
-			 	rightPressed = false,
-			 	leftPressed = false;
+			this.moveStep = 1;
+			this.maxSpeed = 3;
 
+			this.upPressed = false,
+			this.downPressed = false,
+			this.rightPressed = false,
+			this.leftPressed = false;
 
 			 //needs to be throttled
-			$(document).on("keydown", this.handleKeyDown)
-			$(document).on("keyup", this.handleKeyUp)
+			document.addEventListener("keydown", this.handleKeyDown.bind(this))
+			document.addEventListener("keyup", this.handleKeyUp.bind(this))
 
+			
 		}
 
 		PlayerEntity.prototype = {
 			draw: function() {
 				context.fillStyle = this.color;
 				context.beginPath();
-				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+				context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, true);
 				context.closePath();
 				context.fill();
 			},
 			update: function() {
-
 				this.handleControls() 
+				this.velocity.sMultiplyEq(physics.groundFriction)
 
+				if (this.velocity.x > this.maxSpeed) this.velocity.x = this.maxSpeed;
+				if (this.velocity.y > this.maxSpeed) this.velocity.y = this.maxSpeed;
+				if (this.velocity.x < -(this.maxSpeed)) this.velocity.x = -(this.maxSpeed);
+				if (this.velocity.y < -(this.maxSpeed)) this.velocity.y = -(this.maxSpeed);
+
+
+				this.position.vPlusEq(this.velocity)
 			},
 
 			handleControls : function() {
-				console.log("hie!")
+
 				if (this.upPressed) {
-					console.log("up")
-					this.y --;
+					this.velocity.y -= this.moveStep;
 				}
 				if (this.downPressed) {
-					console.log("down")
-					this.y ++;
+					this.velocity.y += this.moveStep;
 				}
 				if (this.rightPressed) {
-					console.log("right")
-					this.x++;
+					this.velocity.x += this.moveStep;
 				}
 				if (this.leftPressed) {
-					console.log("left")
-					this.x--;
+					this.velocity.x -= this.moveStep;
 				}
 			},
 
 			handleKeyDown: function(e) {
 				
-				if (e.which == 87) {
-					this.upPressed = true;
-				}
+				console.log(this.upPressed)
 
-				if (e.which == 83) {
-					this.downPressed = true;
-				}
-
-				if (e.which == 68) {
-					this.rightPressed = true;
-				}
-
-				if (e.which == 65) {
-					this.leftPressed = true;
+				switch (e.which) {
+					case 87:
+						this.upPressed = true;
+						break;
+					case 83:
+						this.downPressed = true;
+						break;
+					case 68:
+						this.rightPressed = true;
+						break;
+					case 65:
+						this.leftPressed = true;
+						break;
 				}
 
 			},
 			handleKeyUp: function(e) {
-				
-				if (e.which == 87) {
-					this.upPressed = false;
+				switch (e.which) {
+					case 87:
+						this.upPressed = false;
+						break;
+					case 83:
+						this.downPressed = false;
+						break;
+					case 68:
+						this.rightPressed = false;
+						break;
+					case 65:
+						this.leftPressed = false;
+						break;
 				}
-
-				if (e.which == 83) {
-					this.downPressed = false;
-				}
-
-				if (e.which == 68) {
-					this.rightPressed = false;
-				}
-
-				if (e.which == 65) {
-					this.leftPressed = false;
-				}
-
 			}
-
 		}
+
 
 
 
