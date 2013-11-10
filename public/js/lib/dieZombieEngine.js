@@ -130,8 +130,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			}
 		}
 
-		CircleEntity.prototype = new Entity();
-		CircleEntity.prototype.constructor = CircleEntity; 
+		// CircleEntity.prototype = new Entity();
+		// CircleEntity.prototype.constructor = CircleEntity; 
 
 		var PlayerEntity = function(x, y, color, radius) {
 			Entity.call(this, x, y, color);
@@ -295,8 +295,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			}
 		}
 
-		PlayerEntity.prototype = new Entity();
-		PlayerEntity.prototype.constructor = PlayerEntity;
+		// PlayerEntity.prototype = new Entity();
+		// PlayerEntity.prototype.constructor = PlayerEntity;
 
 		/* ---- SPRITE SHEETS ----------------------------- */
 
