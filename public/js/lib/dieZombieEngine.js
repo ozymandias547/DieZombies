@@ -108,26 +108,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			})();
 		}
 
-		function bindInput() {
-			document.addEventListener("mousedown", function(e) {
-				isMouseDown = true;
-				handleMouseMove(e);
-				document.addEventListener("mousemove", handleMouseMove, true);
-			}, true);
-
-			document.addEventListener("mouseup", function() {
-				document.removeEventListener("mousemove", handleMouseMove, true);
-				isMouseDown = false;
-				mouseX = undefined;
-				mouseY = undefined;
-			}, true);
-
-			function handleMouseMove(e) {
-				var position = $("#canvas").position();
-				mouseX = (((e.clientX - canvas.getBoundingClientRect().left) - position.left)) / fitViewportToRatio.getScalar();
-				mouseY = (((e.clientY - canvas.getBoundingClientRect().top) - position.top)) / fitViewportToRatio.getScalar();
-			};
-		}
+		
 
 
 
