@@ -170,7 +170,7 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 					this.frameRateElapsed = this.frameCount = 0;
 				}
 
-				Isometric.view(this.player.position.x, this.player.position.y, 1.0, 0.5, 1.0, this.canvas.width, this.canvas.height);
+				Isometric.view(this.player.position.x, this.player.position.y, this.player.position.z, 1.0, 0.5, 1.0, this.canvas.width, this.canvas.height);
 
 				this.tileMap.draw(this.elapsed, this.context);
 

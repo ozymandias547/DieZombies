@@ -53,9 +53,6 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 
 	PlayerEntity.prototype = {
 		draw: function(elapsed, context) {
-
-			Iso.view(this.position.x, this.position.y, 1.0, 0.5, 1.0, canvas.width, canvas.height);
-
 			if (this.isMoving(.2)) {
 				var currentTime = new Date();
 				this.elapsedTime = currentTime - this.lastTime + this.elapsedTime;

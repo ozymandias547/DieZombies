@@ -34,6 +34,19 @@ define(["grass", "isometric"], function(Grass, Iso) {
 			};
 
 			this.draw = function(elapsed, context) {
+				var isOnScreen = false;
+				var verts = this._renderer.prepVerts(this._x, this._y, this._z, this._w, this._h);
+
+				for (var i = 0; i < verts.all.length; i++)
+				{
+					isOnScreen = isOnScreen ? isOnScreen : Iso.isPixOnScreen(verts.all[i].x, verts.all[i].y)
+				}
+
+				if (!isOnScreen)
+				{
+					return;
+				}
+
 				this._renderer.draw(elapsed, context, this._x, this._y, this._z, this._w, this._h);
 
 				if (edges) {
@@ -60,7 +73,7 @@ define(["grass", "isometric"], function(Grass, Iso) {
 				this._tiles[x] = [];
 
 				for (var y = 0; y < this._height; y++) {
-					this._tiles[x][y] = new this.Tile(x * this._tileWidth, y * this._tileHeight, this._tileWidth, this._tileHeight, Math.random() * 50, this, Grass);
+					this._tiles[x][y] = new this.Tile(x * this._tileWidth, y * this._tileHeight, this._tileWidth, this._tileHeight, x * 10 + (this._height - y) * 10, this, Grass);
 				}
 			}
 		};
