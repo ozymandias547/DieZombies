@@ -59,6 +59,4 @@
         };
     }
  
-    // export api
-    window.fullScreenApi = fullScreenApi;
 })();

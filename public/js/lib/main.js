@@ -1,10 +1,10 @@
  require.config({
- 	baseUrl: "js/lib",
+ 	baseUrl: "js",
  	paths: {
  		"jquery": "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
- 		"fitViewportToRatio": "fitViewportToRatio",
- 		"dieZombieEngine": "dieZombieEngine"
- 	},
+ 		"fitViewportToRatio": "lib/fitViewportToRatio",
+ 		"dieZombieEngine": "lib/dieZombieEngine"
+ 		},
  	waitSeconds: 15
  });
 
@@ -13,12 +13,9 @@
 
  	$(document).ready(function() {
 
-
  		dieZombieEngine.init("canvas");
+ 		dieZombieEngine.start();
 
- 		$(".goFullScreen").on("click", function() {
- 			$("#screen").requestFullScreen();
- 		})
 
  		$(window).on("resize", fitViewportToRatio.calculate);
  		$(window).trigger("resize")

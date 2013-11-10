@@ -41,6 +41,10 @@ define(['jquery'], function($) {
         setViewport();
     }
 
+    function getScalar() {
+        return scalar;
+    }
+
     function setViewport() {
         $("#screen").css({
             "transform" : "scale3d(" + scalar + ", " + scalar + ", 1)",
@@ -61,7 +65,7 @@ define(['jquery'], function($) {
     return {
         calculate : calculate,
         setargetWidthrapper : setargetWidthrapper,
-        scalar : scalar
+        getScalar : getScalar
     }
     
 })
