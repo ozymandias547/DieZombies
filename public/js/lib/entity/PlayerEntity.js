@@ -101,7 +101,7 @@ define(["Entity", "vec2", "Sprite"], function(Entity, Vec2, Sprite) {
 
 		},
 
-		update: function() {
+		update: function(elapsed, worldObjects) {
 			this.handleControls()
 			this.velocity.sMultiplyEq(this.groundFriction)
 			this.velocity.sRestrictEq(this.maxSpeed);

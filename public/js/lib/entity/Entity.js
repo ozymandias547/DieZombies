@@ -5,6 +5,7 @@ define(['vec2'], function(Vec2) {
 
 			this.position = new Vec2(x, y);
 			this.velocity = new Vec2(0, 0);
+			this.speed = 0;
 
 			this.groundFriction = 0.92;
 
