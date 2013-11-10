@@ -67,7 +67,7 @@ define(function() {
 			return Math.sqrt(this.x * this.x + this.y * this.y);
 		};
 
-		this.normalise = function() {
+		this.normalize = function() {
 			var length = this.vLength();
 
 			this.x = this.x / length;

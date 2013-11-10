@@ -4,12 +4,14 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		Entity().constructor.call(this, x, y, color);
 		this.radius = radius;
 		this.moveStep = .5;
-		this.maxSpeed = 2;
 		this.isReady = false;
 		this.currentSprite = 0;
 		this.spriteFrequency = 200; //in milliseconds
 		this.elapsedTime = 0;
 		this.lastTime = new Date();
+
+		this.direction = new Vec2(1,1);
+		this.speed = .5;
 
 		this.upPressed = false,
 		this.downPressed = false,
@@ -96,10 +98,25 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		update: function(elapsedTime, worldObjects) {
 
 			//follow the player
+			//find angle between enemy and player (get direction)
+			//normalize
+			//multiple by speed
+			var player = worldObjects["player1"]; // this will need to be redone to step through all players and find the closest
+			
+			this.direction.x = player.position.x - this.position.x;
+			this.direction.y = player.position.y - this.position.y;
+			this.direction.normalize();
+			this.direction.sMultiplyEq(this.speed);
+			this.velocity = this.direction;
+			this.position.vPlusEq(this.velocity);
+			// this.direction.vSubEq(enemy.position)
 
-			this.velocity.sMultiplyEq(this.groundFriction)
-			this.velocity.sRestrictEq(this.maxSpeed);
-			this.position.vPlusEq(this.velocity)
+			// worldObjects["player1"]
+
+
+			// this.velocity.sMultiplyEq(this.groundFriction)
+			// this.velocity.sRestrictEq(this.maxSpeed);
+			// this.position.vPlusEq(this.velocity)
 		}
 
 

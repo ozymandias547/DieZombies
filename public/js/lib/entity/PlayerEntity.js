@@ -4,7 +4,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 		Entity().constructor.call(this, x, y, color);
 		this.radius = radius;
 		this.moveStep = 1;
-		this.maxSpeed = 2;
+		this.maxSpeed = 3;
 		this.isReady = false;
 		this.currentSprite = 0;
 		this.spriteFrequency = 200; //in milliseconds
@@ -81,7 +81,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 						this.runningUp.draw(this.currentSprite, x, y);
 						break;
 					case "right":
-						this.runningRight.draw(this.currentSprite, x, y);
+						this.runningRight.draw(this.currentSprite, x, 	y);
 						break;
 					case "down":
 						this.runningDown.draw(this.currentSprite, x, y);
