@@ -71,21 +71,16 @@ define(["Entity", "vec2", "Sprite"], function(Entity, Vec2, Sprite) {
 
 
 			if (this.isReady) {
-				switch (this.previousPressed) {
-					case "up":
-						this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
-						break;
-					case "right":
-						this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
-						break;
-					case "down":
-						this.runningDown.draw(this.currentSprite, this.position.x, this.position.y);
-						break;
-					case "left":
-						this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
-						break;
+				
+						// this.runningUp.draw(this.currentSprite, this.position.x, this.position.y);
+						
+						// this.runningRight.draw(this.currentSprite, this.position.x, this.position.y);
+						
+						// this.runningDown.draw(this.currentSprite, this.position.x, this.position.y);
+						
+						// this.runningLeft.draw(this.currentSprite, this.position.x, this.position.y);
 				}
-			}
+			
 		},
 
 		isMoving: function() {
@@ -94,7 +89,6 @@ define(["Entity", "vec2", "Sprite"], function(Entity, Vec2, Sprite) {
 			if (this.velocity.x < -.2) return true;
 			if (this.velocity.y < -.2) return true;
 			if (this.velocity.y > .2) return true;
-
 			return false;
 
 		},
