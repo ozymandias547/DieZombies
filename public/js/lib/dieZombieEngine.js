@@ -122,10 +122,9 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 		}
 
 		function update(elapsed) {
-			//get data from server here?
 
 			for (var id in worldObjects) {
-				worldObjects[id].update(elapsed);
+				worldObjects[id].update(elapsed, worldObjects);
 			}
 		}
 
