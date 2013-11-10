@@ -4,7 +4,8 @@
  		"jquery": "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
  		"fitViewportToRatio": "lib/fitViewportToRatio",
  		"dieZombieEngine": "lib/dieZombieEngine",
- 		"vec2" : "lib/vec2"
+ 		"vec2" : "lib/vec2",
+ 		"tileMap" : "lib/map/tileMap"
  		},
  	waitSeconds: 15
  });
