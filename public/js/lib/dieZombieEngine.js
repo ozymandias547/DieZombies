@@ -25,8 +25,36 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			buildFixtureData({
 				"enemy1": {
 					role: "enemy",
-					x: 200,
+					x: 300,
 					y: 200,
+					radius: 30,
+					color: "red"
+				},
+				"enemy2": {
+					role: "enemy",
+					x: 400,
+					y: 200,
+					radius: 30,
+					color: "red"
+				},
+				"enemy3": {
+					role: "enemy",
+					x: 500,
+					y: 300,
+					radius: 30,
+					color: "red"
+				},
+				"enemy4": {
+					role: "enemy",
+					x: 500,
+					y: 400,
+					radius: 30,
+					color: "red"
+				},
+				"enemy5": {
+					role: "enemy",
+					x: 500,
+					y: 100,
 					radius: 30,
 					color: "red"
 				},

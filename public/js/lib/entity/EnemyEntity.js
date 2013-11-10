@@ -100,7 +100,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 			//follow the player
 			//find angle between enemy and player (get direction)
 			//normalize
-			//multiple by speed
+			//multiply by speed
 			var player = worldObjects["player1"]; // this will need to be redone to step through all players and find the closest
 			
 			this.direction.x = player.position.x - this.position.x;
@@ -109,14 +109,7 @@ define(["Entity", "vec2", "Sprite", "isometric"], function(Entity, Vec2, Sprite,
 			this.direction.sMultiplyEq(this.speed);
 			this.velocity = this.direction;
 			this.position.vPlusEq(this.velocity);
-			// this.direction.vSubEq(enemy.position)
-
-			// worldObjects["player1"]
-
-
-			// this.velocity.sMultiplyEq(this.groundFriction)
-			// this.velocity.sRestrictEq(this.maxSpeed);
-			// this.position.vPlusEq(this.velocity)
+			
 		}
 
 
