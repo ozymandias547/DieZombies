@@ -8,7 +8,7 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.mouseY = -1;
 			this.isMouseDown = false;
 			this.lastTime = 0;
-			this.tileMap = new TileMap(15, 15, 60, 60);
+			this.tileMap = new TileMap(10, 10, 60, 60);
 			this.frameRateElapsed = 0;
 			this.frameRate = 0;
 			this.frameCount = 0;
@@ -69,7 +69,7 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.buildFixtureData = function(obj) {
 				for (var id in obj) {
 					if (obj[id].role == "player")
-						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius, this);
+						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y, NaN, "red", obj[id].radius, this);
 
 					if (obj[id].role == "circle")
 						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius);

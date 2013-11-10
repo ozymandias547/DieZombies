@@ -20,13 +20,13 @@ define(function() {
 			return this;
 		}
 
-		this.sRestrictEq = function(s) {
+		this.sRestrictEq = function(s, ignoreZ) {
 			if (this.x > s) this.x = s;
 			if (this.y > s) this.y = s;
-			if (this.z > s) this.z = s;
+			if (!ignoreZ && this.z > s) this.z = s;
 			if (this.x < -(s)) this.x = -(s);
 			if (this.y < -(s)) this.y = -(s);
-			if (this.z < -(s)) this.z = -(s);
+			if (!ignoreZ && this.z < -(s)) this.z = -(s);
 		}
 
 		this.vPlusEq = function(v) {

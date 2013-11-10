@@ -99,36 +99,114 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 		},
 
 		update: function(elapsed, worldObjects) {
+			var prevTile = this.tile;
+
+			if (!this.tile) {
+				this.tile = this.engine.tileMap.getTileAt(this.position.x, this.position.y);
+			}
+
+			if (isNaN(this.position.z)) {
+				this.position.z = this.tile.z();
+			}
 
 			this.handleControls(elapsed);
 			this.velocity.sMultiplyEq(this.groundFriction)
-			this.velocity.sRestrictEq(this.maxSpeed);
+			this.velocity.sRestrictEq(this.maxSpeed, true);
 			this.position.vPlusEq(this.velocity.sMultiply(elapsed));
 
 			this.tile = this.engine.tileMap.getTileAt(this.position.x, this.position.y);
 
-			if (this.tile)
-			{
+			// If we are falling onto our current tile and the movement pushed us
+			// below then reset our vertical velocity and set our height to the tile height.
+			if (this.tile && this.velocity.z < 0 && this.position.z < this.tile.z()) {
+				this.velocity.z = 0;
 				this.position.z = this.tile.z();
+			}
+
+			if (this.tile) {
+				var delta = this.tile.z() - this.position.z;
+
+				if (delta < 0) {
+					// Falling!
+					this.velocity.z -= 500 * elapsed;
+				} else if (delta == 0) {
+					// On the ground, can't fall through it!
+					if (this.velocity.z < 0) {
+						this.velocity.z = 0;
+					}
+				} else if (delta > 0) {
+					// Climbing!
+					// If this is our first time we bumped into this tile that has a cliff,
+					// We want to stop horizontal velocity and if the user
+					// was already falling, we obviously need to stop that too.
+					if (this.tile != prevTile) {
+						this.velocity.x = this.velocity.y = 0;
+					}
+
+					if (this.velocity.z < 0) {
+						this.velocity.z = 0;
+					}
+				}
 			}
 		},
 
 		handleControls: function(elapsed) {
+			var deltaX = 0,
+				deltaY = 0;
 
 			if (this.upPressed) {
-				this.velocity.x += this.moveStep * elapsed;
-				this.velocity.y -= this.moveStep * elapsed;
+				deltaX = this.moveStep * elapsed;
+				deltaY -= this.moveStep * elapsed;
 			} else if (this.downPressed) {
-				this.velocity.x -= this.moveStep * elapsed;
-				this.velocity.y += this.moveStep * elapsed;
+				deltaX -= this.moveStep * elapsed;
+				deltaY += this.moveStep * elapsed;
 			}
 
 			if (this.rightPressed) {
-				this.velocity.x += this.moveStep * elapsed;
-				this.velocity.y += this.moveStep * elapsed;
+				deltaX += this.moveStep * elapsed;
+				deltaY += this.moveStep * elapsed;
 			} else if (this.leftPressed) {
-				this.velocity.x -= this.moveStep * elapsed;
-				this.velocity.y -= this.moveStep * elapsed;
+				deltaX -= this.moveStep * elapsed;
+				deltaY -= this.moveStep * elapsed;
+			}
+
+			var allowHorizontal = true;
+
+			if (this.tile) {
+				allowHorizontal = false;
+				var deltaZ = this.tile.z() - this.position.z;
+
+				// Normalize (-1, 0, or 1) from float
+				var dx = deltaX ? (deltaX > 0 ? 10 : -10) : 0;
+				var dy = deltaY ? (deltaY > 0 ? 10 : -10) : 0;
+
+				// Here we find the destination tile IF we allow the user to continue pressing the key
+				// that they are pressing.
+				var destTile = this.engine.tileMap.getTileAt(this.position.x + dx, this.position.y + dy);
+				var destZ = destTile.z();
+
+				// Do we need to climb?
+				if (deltaZ > 0) {
+					// Is the user requesting to move toward the tile we are on that is
+					// higher than we are? Then climb.
+					if ((dx || dy) && destTile == this.tile) {
+						this.velocity.z += 500 * elapsed;
+					} else {
+						// In this case, we just allow the user to continue moving OFF the tile
+						// that they are climbing onto and this will automatically put them in fall
+						// state.
+						allowHorizontal = true;
+					}
+				} else if (deltaZ < 0) {
+					// Falling!
+					this.velocity.z -= 1000 * elapsed;
+				} else {
+					allowHorizontal = true;
+				}
+			}
+
+			if (allowHorizontal) {
+				this.velocity.vPlusEq(new Vec3(deltaX, deltaY, 0));
 			}
 		},
 
