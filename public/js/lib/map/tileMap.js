@@ -21,6 +21,10 @@ define(["grass", "isometric"], function(Grass, Iso) {
 				return this._y;
 			};
 
+			this.z = function() {
+				return this._z;
+			};
+
 			this.tileMap = function() {
 				return this._tileMap;
 			};
@@ -42,7 +46,7 @@ define(["grass", "isometric"], function(Grass, Iso) {
 			this.update = function(elapsed) {};
 
 			this.zBuffIndex = function() {
-				return Iso.pY(this._x + this._w, this._y, this._z);
+				return Iso.pY(this._x + this._w, this._y, 0);
 			}
 		};
 
@@ -56,7 +60,7 @@ define(["grass", "isometric"], function(Grass, Iso) {
 				this._tiles[x] = [];
 
 				for (var y = 0; y < this._height; y++) {
-					this._tiles[x][y] = new this.Tile(x * this._tileWidth, y * this._tileHeight, this._tileWidth, this._tileHeight, Math.random() * 10, this, Grass);
+					this._tiles[x][y] = new this.Tile(x * this._tileWidth, y * this._tileHeight, this._tileWidth, this._tileHeight, Math.random() * 50, this, Grass);
 				}
 			}
 		};

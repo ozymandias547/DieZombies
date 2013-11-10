@@ -15,8 +15,8 @@ define(function() {
 				pos[1],
 				this.width,
 				this.height,
-				x,
-				y,
+				x - this.width / 2,
+				y - this.height,
 				this.width,
 				this.height
 			);

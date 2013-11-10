@@ -109,6 +109,11 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 			this.position.vPlusEq(this.velocity.sMultiply(elapsed));
 
 			this.tile = this.engine.tileMap.getTileAt(this.position.x, this.position.y);
+
+			if (this.tile)
+			{
+				this.position.z = this.tile.z();
+			}
 		},
 
 		handleControls: function(elapsed) {
