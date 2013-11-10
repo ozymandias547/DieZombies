@@ -7,23 +7,22 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'isometric'],
 			lastTime = 0,
 			tileMap = new TileMap(15, 15, 60, 60);
 
-		Isometric.view(2, 0, 0, 1.0, 1.0)
+		var player = {
+				role: "player",
+				x: 100,
+				y: 100,
+				radius: 20,
+				color: "green"
+			};
 
 		/* ---- INITIALZING ----------------------------- */
 
 		function init(canvasID) {
-
 			initCanvas(canvasID);
 			initAnimationFrame();
 			bindInput();
 			buildFixtureData({
-				"player1": {
-					role: "player",
-					x: 100,
-					y: 100,
-					radius: 20,
-					color: "green"
-				},
+				"player": player,
 				"circle": {
 					role: "circle",
 					x: 100,
@@ -37,7 +36,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'isometric'],
 
 		function buildFixtureData(obj) {
 			for (var id in obj) {
-				worldObjects[id] = Entity.build(id, obj[id]);
+				worldObjects[id] = this[id] = Entity.build(id, obj[id]);
 			}
 		}
 
@@ -344,8 +343,6 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'isometric'],
 			})();
 		}
 
-
-
 		function update(elapsed) {
 			//get data from server here?
 
@@ -355,6 +352,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'isometric'],
 		}
 
 		function draw(elapsed) {
+			Isometric.view(this.player.position.x, this.player.position.y, 1.0, 0.5, 1.0, canvas.width, canvas.height);
+
 			tileMap.draw(elapsed, this.context);
 
 			for (var id in worldObjects) {

@@ -1,21 +1,29 @@
 define(function () {
 	return new (function Isometric()
 	{
-		this.view = function(xToYRatio, ulX, ulY, w, h)
+		this.view = function(cX, cY, scaleX, scaleY, scaleZ, screenW, screenH)
 		{
-			this._ulX = ulX;
-			this._ulY = ulY;
-			this._w = w;
-			this._h = h;
-			this._xToYRatio = xToYRatio;
+			this._cX = cX;
+			this._cY = cY;
+			this._screenW = screenW;
+			this._screenH = screenH;
+			this._scaleX = scaleX;
+			this._scaleY = scaleY;
+			this._scaleZ = scaleZ;
+
+			this._ulX = - screenW / 2;
+			this._ulY = - screenH / 2;
+
+			this._lrX = screenW / 2;
+			this._lrY = screenH / 2;
 		};
 
 		this.isOnScreen = function(x, y, z)
 		{
 			return 	pX(x, y) > _ulX && 
-					pX(x, y) < (_ulX + w) &&
+					pX(x, y) < (_ulX + this._screenW) &&
 					pY(x, y, z) > _ulY &&
-					pY(x, y, z) < (_ulY + h);
+					pY(x, y, z) < (_ulY + this._screenH);
 		};
 
 		/**
@@ -23,7 +31,7 @@ define(function () {
 		 */
 		this.pX = function(x, y)
 		{
-			return (0.5 * x) + (0.5 * y) + this._ulX;
+			return ((x - this._cX) + (y - this._cY)) * this._scaleX - this._ulX;
 		};
 
 		/**
@@ -31,7 +39,7 @@ define(function () {
 		 */
 		this.pY = function(x, y, z)
 		{
-			return -(0.5 * x) + (0.5 * y) - z + this._ulY;
+			return (-(x - this._cX) + (y - this._cY)) * this._scaleY - (z * this._scaleZ) - this._ulY;
 		};
 	});
 });
