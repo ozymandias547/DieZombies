@@ -91,11 +91,11 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 
 		var Entity = function(x, y, color) {
 			color = color || "red";
-			
+
 			this.position = new Vec2(x, y);
 			this.velocity = new Vec2(0, 0);
-			this.acceleration = 0;			
-			
+			this.acceleration = 0;
+
 			this.color = color;
 		}
 
@@ -130,6 +130,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			this.moveStep = 1;
 			this.maxSpeed = 3;
 			this.isReady = false;
+			this.currentSprite = 0;
 
 			this.upPressed = false,
 			this.downPressed = false,
@@ -140,30 +141,40 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			this.image.src = "assets/OrcExample.png";
 			this.image.onload = function() {
 				this.isReady = true;
+				this.runningDown = new Sprite(this.image, 40, 40, [[0, 0], [40, 0], [80, 0]]);
+				this.runningRight = new Sprite(this.image, 40, 40, [[0, 40], [40, 40], [80, 40]]);
+				this.runningUp = new Sprite(this.image, 40, 40, [[0, 80], [40, 80], [80, 80]]);
+				this.runningLeft = new Sprite(this.image, 40, 40, [[0, 120], [40, 120], [80, 120]]);
 			}.bind(this);
 
-			 //needs to be throttled
 			document.addEventListener("keydown", this.handleKeyDown.bind(this))
 			document.addEventListener("keyup", this.handleKeyUp.bind(this))
 
-			
+
 		}
 
 		PlayerEntity.prototype = {
 
 			draw: function(context) {
 				if (this.isReady) {
-					context.drawImage(this.image, this.position.x, this.position.y);
+					
+					this.runningUp.draw(0, this.position.x, this.position.y);
+					// this.runningDown.draw(0, this.position.x, this.position.y);
+					// this.runningRight.draw(0, this.position.x, this.position.y);
+					// this.runningLeft.draw(0, this.position.x, this.position.y);
+
+					// this.currentSprite++;
+					// if (this.currentSprite > 2) this.currentSprite = 0;
 				}
 			},
 			update: function() {
-				this.handleControls() 
+				this.handleControls()
 				this.velocity.sMultiplyEq(physics.groundFriction)
 				this.velocity.sRestrictEq(this.maxSpeed);
 				this.position.vPlusEq(this.velocity)
 			},
 
-			handleControls : function() {
+			handleControls: function() {
 
 				if (this.upPressed) {
 					this.velocity.y -= this.moveStep;
@@ -180,7 +191,7 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			},
 
 			handleKeyDown: function(e) {
-				
+
 				console.log(this.upPressed)
 
 				switch (e.which) {
@@ -217,8 +228,31 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 			}
 		}
 
+		/* ---- SPRITE SHEETS ----------------------------- */
 
+		function Sprite(img, width, height, positions) {
+			this.img = img;
+			this.width = width;
+			this.height = height;
+			this.positions = positions;
+		}
 
+		Sprite.prototype = {
+			draw: function(position, x, y) {
+				var pos = this.positions[position];
+				context.drawImage(
+					this.img,
+					pos[0],
+					pos[1],
+					this.width,
+					this.height,
+					x,
+					y,
+					this.width,
+					this.height
+				);
+			}
+		};
 
 		/* ---- GAME LOOP ----------------------------- */
 
