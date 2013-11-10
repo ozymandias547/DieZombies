@@ -1,5 +1,5 @@
-define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'PlayerEntity', 'isometric'],
-	function(fitViewportToRatio, Vec2, TileMap, Entity, CircleEntity, PlayerEntity, Isometric) {
+define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'PlayerEntity', 'EnemyEntity', 'isometric'],
+	function(fitViewportToRatio, Vec2, TileMap, Entity, CircleEntity, PlayerEntity, EnemyEntity, Isometric) {
 
 
 		var canvas = null,
@@ -18,6 +18,13 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'Play
 			initAnimationFrame();
 			bindInput();
 			buildFixtureData({
+				"enemy1": {
+					role: "enemy",
+					x: 200,
+					y: 200,
+					radius: 30,
+					color: "red"
+				},
 				"player1": {
 					role: "player",
 					x: 100,
@@ -25,13 +32,6 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'Play
 					radius: 20,
 					color: "green"
 				},
-				"circle": {
-					role: "circle",
-					x: 100,
-					y: 100,
-					radius: 30,
-					color: "red"
-				}
 			});
 
 		}
@@ -44,6 +44,9 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleEntity', 'Play
 
 				if (obj[id].role == "circle") 
 					worldObjects[id] = CircleEntity(obj[id].x, obj[id].y,"red", obj[id].radius)
+
+				if (obj[id].role == "enemy")
+					worldObjects[id] = EnemyEntity(obj[id].x, obj[id].y, "red", obj[id].radius)
 
 			}
 		}
