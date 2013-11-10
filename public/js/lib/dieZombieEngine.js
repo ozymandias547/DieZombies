@@ -140,10 +140,26 @@ define(['fitViewportToRatio', 'vec2'],
 			this.image.src = "assets/OrcExample.png";
 			this.image.onload = function() {
 				this.isReady = true;
-				this.runningDown = new Sprite(this.image, 40, 40, [[0, 0], [40, 0], [80, 0]]);
-				this.runningRight = new Sprite(this.image, 40, 40, [[0, 40], [40, 40], [80, 40]]);
-				this.runningUp = new Sprite(this.image, 40, 40, [[0, 80], [40, 80], [80, 80]]);
-				this.runningLeft = new Sprite(this.image, 40, 40, [[0, 120], [40, 120], [80, 120]]);
+				this.runningDown = new Sprite(this.image, 40, 40, [
+					[0, 0],
+					[40, 0],
+					[80, 0]
+				]);
+				this.runningRight = new Sprite(this.image, 40, 40, [
+					[0, 40],
+					[40, 40],
+					[80, 40]
+				]);
+				this.runningUp = new Sprite(this.image, 40, 40, [
+					[0, 80],
+					[40, 80],
+					[80, 80]
+				]);
+				this.runningLeft = new Sprite(this.image, 40, 40, [
+					[0, 120],
+					[40, 120],
+					[80, 120]
+				]);
 			}.bind(this);
 
 			document.addEventListener("keydown", this.handleKeyDown.bind(this))
@@ -156,15 +172,25 @@ define(['fitViewportToRatio', 'vec2'],
 
 			draw: function() {
 				if (this.isReady) {
-					
-					this.runningUp.draw(0, this.position.x, this.position.y);
-					// this.runningDown.draw(0, this.position.x, this.position.y);
-					// this.runningRight.draw(0, this.position.x, this.position.y);
-					// this.runningLeft.draw(0, this.position.x, this.position.y);
-
-					// this.currentSprite++;
-					// if (this.currentSprite > 2) this.currentSprite = 0;
+					var directionRunning = this.whichDirection();
+					switch (directionRunning) {
+						case "up":
+							this.runningUp.draw(0, this.position.x, this.position.y);
+							break;
+						case "right":
+							this.runningRight.draw(0, this.position.x, this.position.y);
+							break;
+						case "down":
+							this.runningDown.draw(0, this.position.x, this.position.y);
+							break;
+						case "left":
+							this.runningLeft.draw(0, this.position.x, this.position.y);
+							break;
+					}
 				}
+			},
+			whichDirection : function() {
+
 			},
 			update: function() {
 				this.handleControls()
