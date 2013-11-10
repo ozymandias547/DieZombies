@@ -21,7 +21,6 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 		function init(canvasID) {
 			initCanvas(canvasID);
 			initAnimationFrame();
-			bindInput();
 			buildFixtureData({
 				"enemy1": {
 					role: "enemy",
@@ -120,6 +119,9 @@ define(['fitViewportToRatio', 'vec2', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				this.context.clearRect(0, 0, canvas.width, canvas.height);
 
 				var elapsed = lastTime ? (new Date().getTime() - lastTime) / 1000.0 : 0.0;
+				console.log("current: " + new Date().getTime() + "; lasttime: " + lastTime);
+				console.log(elapsed)
+
 
 				update(elapsed);
 				draw(elapsed);

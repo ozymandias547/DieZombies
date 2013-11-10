@@ -7,7 +7,7 @@ define(['bullet', 'mouseController', 'world', 'vec2'], function(bullet, mouseCon
 	ShotGun.prototype = {
 		equip: function() {
 			//activate the gun and bind shoot to mouseController click
-			mouseController.addClickEvent("shotgun", shoot);
+			mouseController.addClickEvent("shotgun", this.shoot);
 		},
 		unEquip: function() {
 			mouseController.removeClickEvent("shotgun");
