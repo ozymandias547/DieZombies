@@ -1,3 +1,4 @@
+
 define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
 	function(fitViewportToRatio, Vec3, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric) {
 		var DieZombieEngine = function() {
@@ -126,6 +127,7 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				};
 			}
 
+		
 			/* ---- GAME LOOP ----------------------------- */
 
 			this.start = function() {
