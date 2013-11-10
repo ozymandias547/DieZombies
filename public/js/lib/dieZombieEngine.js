@@ -1,12 +1,11 @@
 define(['fitViewportToRatio', 'vec2', 'tileMap'],
-	function(fitViewportToRatio, Vec2) {
+	function(fitViewportToRatio, Vec2, TileMap) {
 
 		var canvas = null,
 			worldObjects = {},
 			mouseX, mouseY, isMouseDown,
-			lastTime = 0;
-
-
+			lastTime = 0,
+			tileMap = new TileMap();
 
 		/* ---- INITIALZING ----------------------------- */
 
@@ -281,6 +280,8 @@ define(['fitViewportToRatio', 'vec2', 'tileMap'],
 		}
 
 		function draw(elapsed) {
+			tileMap.draw(elapsed, this.context);
+
 			for (var id in worldObjects)
 			{
 				worldObjects[id].draw(elapsed, this.context);

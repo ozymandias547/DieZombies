@@ -5,7 +5,8 @@
  		"fitViewportToRatio": "lib/fitViewportToRatio",
  		"dieZombieEngine": "lib/dieZombieEngine",
  		"vec2" : "lib/vec2",
- 		"tileMap" : "lib/map/tileMap"
+ 		"tileMap" : "lib/map/tileMap",
+ 		"grass" : "lib/map/grass"
  		},
  	waitSeconds: 15
  });
