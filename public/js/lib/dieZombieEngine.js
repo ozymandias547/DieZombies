@@ -1,8 +1,6 @@
 define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
-	function (fitViewportToRatio, Vec3, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric)
-	{
-		var DieZombieEngine = function()
-		{
+	function(fitViewportToRatio, Vec3, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric) {
+		var DieZombieEngine = function() {
 			this.canvas = null;
 			this.worldObjects = {};
 			this.mouseX = -1;
@@ -16,15 +14,43 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 
 			/* ---- INITIALZING ----------------------------- */
 
-			this.init = function (canvasID) {
+			this.init = function(canvasID) {
 				this.initCanvas(canvasID);
 				this.initAnimationFrame();
 				this.bindInput();
 				this.buildFixtureData({
 					"enemy1": {
 						role: "enemy",
-						x: 200,
+						x: 300,
 						y: 200,
+						radius: 30,
+						color: "red"
+					},
+					"enemy2": {
+						role: "enemy",
+						x: 400,
+						y: 200,
+						radius: 30,
+						color: "red"
+					},
+					"enemy3": {
+						role: "enemy",
+						x: 500,
+						y: 300,
+						radius: 30,
+						color: "red"
+					},
+					"enemy4": {
+						role: "enemy",
+						x: 500,
+						y: 400,
+						radius: 30,
+						color: "red"
+					},
+					"enemy5": {
+						role: "enemy",
+						x: 500,
+						y: 100,
 						radius: 30,
 						color: "red"
 					},
@@ -36,16 +62,15 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 						color: "green"
 					}
 				});
-
 			}
 
 			this.buildFixtureData = function(obj) {
-				for (var id in obj) {	
-					if (obj[id].role == "player") 
-						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y,"red", obj[id].radius, this);
+				for (var id in obj) {
+					if (obj[id].role == "player")
+						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y, "red", obj[id].radius, this);
 
-					if (obj[id].role == "circle") 
-						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y,"red", obj[id].radius);
+					if (obj[id].role == "circle")
+						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y, "red", obj[id].radius);
 
 					if (obj[id].role == "enemy")
 						this.worldObjects[id] = EnemyFactory(obj[id].x, obj[id].y, "red", obj[id].radius);
@@ -73,8 +98,8 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 						window.oRequestAnimationFrame ||
 						window.msRequestAnimationFrame ||
 						function( /* function */ callback, /* DOMElement */ element) {
-								window.setTimeout(callback, 1000 / 60);
-							};
+							window.setTimeout(callback, 1000 / 60);
+					};
 				})();
 			}
 
@@ -131,10 +156,8 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				this.frameRateElapsed += elapsed;
 				this.frameCount++;
 
-				if (this.frameRateElapsed >= 1.0)
-				{
+				if (this.frameRateElapsed >= 1.0) {
 					this.frameRate = (1.0 / this.frameRateElapsed) * this.frameCount;
-
 					this.frameRateElapsed = this.frameCount = 0;
 				}
 
@@ -146,9 +169,9 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 					this.worldObjects[id].draw(elapsed, this.context);
 				}
 
-				this.context.font="20px Arial";
-				this.context.fillText("FPS: " + Math.round(this.frameRate).toString(10),5,50);
-				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10),5,100);
+				this.context.font = "20px Arial";
+				this.context.fillText("FPS: " + Math.round(this.frameRate).toString(10), 5, 50);
+				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10), 5, 100);
 			}
 		}
 

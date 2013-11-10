@@ -4,12 +4,14 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 		Entity().constructor.call(this, x, y, z, color);
 		this.radius = radius;
 		this.moveStep = .5;
-		this.maxSpeed = 2;
 		this.isReady = false;
 		this.currentSprite = 0;
 		this.spriteFrequency = 200; //in milliseconds
 		this.elapsedTime = 0;
 		this.lastTime = new Date();
+
+		this.direction = new Vec3(1,1, 0);
+		this.speed = .5;
 
 		this.upPressed = false,
 		this.downPressed = false,
@@ -50,6 +52,7 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 	EnemyEntity.prototype = {
 
 		draw: function(elapsed, context) {
+
 
 			if (this.isMoving()) {
 				var currentTime = new Date();
@@ -92,10 +95,18 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 		update: function(elapsedTime, worldObjects) {
 
 			//follow the player
-
-			this.velocity.sMultiplyEq(this.groundFriction)
-			this.velocity.sRestrictEq(this.maxSpeed);
-			this.position.vPlusEq(this.velocity)
+			//find angle between enemy and player (get direction)
+			//normalize
+			//multiply by speed
+			var player = worldObjects["player1"]; // this will need to be redone to step through all players and find the closest
+			
+			this.direction.x = player.position.x - this.position.x;
+			this.direction.y = player.position.y - this.position.y;
+			this.direction.normalize();
+			this.direction.sMultiplyEq(this.speed);
+			this.velocity = this.direction;
+			this.position.vPlusEq(this.velocity);
+			
 		}
 
 

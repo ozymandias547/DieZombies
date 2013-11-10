@@ -54,7 +54,9 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 	PlayerEntity.prototype = {
 		draw: function(elapsed, context) {
 
-			if (this.isMoving()) {
+			Iso.view(this.position.x, this.position.y, 1.0, 0.5, 1.0, canvas.width, canvas.height);
+
+			if (this.isMoving(.2)) {
 				var currentTime = new Date();
 				this.elapsedTime = currentTime - this.lastTime + this.elapsedTime;
 
@@ -91,12 +93,12 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 		},
 
 		isMoving: function() {
-			return this.velocity.x > 0.2 ||
-				this.velocity.x < -0.2 ||
-				this.velocity.y > 0.2 ||
-				this.velocity.y < -0.2 ||
-				this.velocity.z > 0.2 ||
-				this.velocity.z < -0.2;
+			return this.velocity.x > this.threshold ||
+				this.velocity.x < -this.threshold ||
+				this.velocity.y > this.threshold ||
+				this.velocity.y < -this.threshold ||
+				this.velocity.z > this.threshold ||
+				this.velocity.z < -this.threshold;
 		},
 
 		update: function(elapsed, worldObjects) {
