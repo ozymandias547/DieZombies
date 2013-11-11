@@ -69,13 +69,13 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			this.buildFixtureData = function(obj) {
 				for (var id in obj) {
 					if (obj[id].role == "player")
-						this.worldObjects[id] = this.player = PlayerFactory(obj[id].x, obj[id].y, NaN, "red", obj[id].radius, this);
+						this.worldObjects[id] = this.player = new PlayerFactory(id, obj[id].x, obj[id].y, NaN, "red", obj[id].radius, this);
 
 					if (obj[id].role == "circle")
-						this.worldObjects[id] = CircleFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius);
+						this.worldObjects[id] = new CircleFactory(id, obj[id].x, obj[id].y, 0, "red", obj[id].radius);
 
 					if (obj[id].role == "enemy")
-						this.worldObjects[id] = EnemyFactory(obj[id].x, obj[id].y, 0, "red", obj[id].radius);
+						this.worldObjects[id] = new EnemyFactory(id, obj[id].x, obj[id].y, 0, "red", obj[id].radius);
 				}
 			}
 
@@ -153,13 +153,13 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 
 					window.requestAnimFrame(loop);
 				})();
-			}
+			};
 
 			this.update = function(elapsed) {
 				for (var id in this.worldObjects) {
 					this.worldObjects[id].update(this.elapsed, this.worldObjects);
 				}
-			}
+			};
 
 			this.draw = function(elapsed) {
 				this.frameRateElapsed += elapsed;
@@ -172,16 +172,23 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 
 				Isometric.view(this.player.position.x, this.player.position.y, this.player.position.z, 1.0, 0.5, 1.0, this.canvas.width, this.canvas.height);
 
-				this.tileMap.draw(this.elapsed, this.context);
+				var zBuff = [];
 
-				for (var id in this.worldObjects) {
-					this.worldObjects[id].draw(elapsed, this.context);
+				zBuff = zBuff.concat(this.tileMap.getChildrenForDraw());
+
+				zBuff.sort(function(a, b) {
+					return a.z - b.z;
+				});
+
+				for (var i = 0; i < zBuff.length; i++)
+				{
+					zBuff[i].renderer.draw(elapsed, this.context);
 				}
 
 				this.context.font = "20px Arial";
 				this.context.fillText("FPS: " + Math.round(this.frameRate).toString(10), 5, 50);
 				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10), 5, 100);
-			}
+			};
 		}
 
 		return new DieZombieEngine();

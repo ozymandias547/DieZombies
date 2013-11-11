@@ -1,6 +1,6 @@
 define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite, Iso) {
-	var PlayerEntity = function(x, y, z, color, radius, engine) {
-		Entity().constructor.call(this, x, y, z, color);
+	var PlayerEntity = function(name, x, y, z, color, radius, engine) {
+		Entity().constructor.call(this, name, x, y, z, color);
 		this.engine = engine;
 		this.radius = radius;
 		this.moveStep = 500;
@@ -123,13 +123,22 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 				this.position.z = this.tile.z();
 			}
 
+			if (prevTile)
+			{
+				delete prevTile.children[this.name];
+			}
+
 			if (this.tile) {
+				this.tile.children[this.name] = this;
+
 				var delta = this.tile.z() - this.position.z;
 
 				if (delta < 0) {
+					this.clearEffectiveTile();
 					// Falling!
 					this.velocity.z -= 500 * elapsed;
 				} else if (delta == 0) {
+					this.clearEffectiveTile();
 					// On the ground, can't fall through it!
 					if (this.velocity.z < 0) {
 						this.velocity.z = 0;
@@ -140,6 +149,7 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 					// We want to stop horizontal velocity and if the user
 					// was already falling, we obviously need to stop that too.
 					if (this.tile != prevTile) {
+						this.effectiveTile = prevTile;
 						this.velocity.x = this.velocity.y = 0;
 					}
 
@@ -148,6 +158,22 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 					}
 				}
 			}
+
+			if (this.effectiveTile)
+			{
+				this.effectiveTile.children[this.name] = this;
+				delete this.tile.children[this.name];
+			}
+		},
+
+		clearEffectiveTile: function()
+		{
+			if (this.effectiveTile)
+			{
+				delete this.effectiveTile.children[this.name];
+			}
+
+			this.effectiveTile = null;
 		},
 
 		handleControls: function(elapsed) {
@@ -249,7 +275,5 @@ define(["Entity", "vec3", "Sprite", "isometric"], function(Entity, Vec3, Sprite,
 		}
 	};
 
-	return function(x, y, z, color, radius, engine) {
-		return new PlayerEntity(x, y, z, color, radius, engine);
-	}
+	return PlayerEntity;
 });

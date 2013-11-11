@@ -1,7 +1,7 @@
 define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Entity, Vec3, Sprite, Engine, Iso) {
 
-	var EnemyEntity = function(x, y, z, color, radius) {
-		Entity().constructor.call(this, x, y, z, color);
+	var EnemyEntity = function(name, x, y, z, color, radius) {
+		Entity().constructor.call(this, name, x, y, z, color);
 		this.radius = radius;
 		this.moveStep = .5;
 		this.isReady = false;
@@ -112,8 +112,6 @@ define(["Entity", "vec3", "Sprite","dieZombieEngine", "isometric"], function(Ent
 
 	}
 
-	return function(x, y, z, color, radius) {
-		return new EnemyEntity(x, y, z, color, radius)
-	}
+	return EnemyEntity;
 
 });

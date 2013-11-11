@@ -48,7 +48,7 @@ define(["isometric"], function(Iso) {
 			};
 		}
 
-		this.draw = function(elapsed, canvasContext, x, y, z, w, h) {
+		this.draw = function(tile, elapsed, canvasContext, x, y, z, w, h) {
 			this._g = this._g || Math.round(Math.random() * 100 + 150);
 
 			var v = this.verts;

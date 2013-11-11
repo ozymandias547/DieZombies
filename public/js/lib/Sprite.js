@@ -9,6 +9,7 @@ define(function() {
 	Sprite.prototype = {
 		draw: function(context, position, x, y) {
 			var pos = this.positions[position];
+			
 			context.drawImage(
 				this.img,
 				pos[0],

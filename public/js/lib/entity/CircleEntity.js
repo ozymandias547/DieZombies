@@ -1,6 +1,6 @@
 define(["Entity", "isometric"], function(Entity, Iso) {
-	var CircleEntity = function(x, y, color, radius) {
-		Entity().constructor.call(this, x, y, color);
+	var CircleEntity = function(name, x, y, color, radius) {
+		Entity().constructor.call(this, name, x, y, color);
 		this.radius = radius;
 	}
 
@@ -20,8 +20,6 @@ define(["Entity", "isometric"], function(Entity, Iso) {
 		}
 	}
 
-	return function(x, y, color, radius) {
-		return new CircleEntity(x, y, color, radius)
-	}
+	return CircleEntity;
 
 });

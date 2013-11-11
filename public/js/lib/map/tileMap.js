@@ -12,6 +12,7 @@ define(["grass", "isometric"], function(Grass, Iso) {
 			this._edges = edges;
 			this._tileMap = tileMap;
 			this._renderer = new rendererType();
+			this.children = {};
 
 			this.x = function() {
 				return this._x;
@@ -33,7 +34,8 @@ define(["grass", "isometric"], function(Grass, Iso) {
 				return this._x + ", " + this._y;
 			};
 
-			this.draw = function(elapsed, context) {
+			this.canDraw = function()
+			{
 				var isOnScreen = false;
 				var verts = this._renderer.prepVerts(this._x, this._y, this._z, this._w, this._h);
 
@@ -42,17 +44,23 @@ define(["grass", "isometric"], function(Grass, Iso) {
 					isOnScreen = isOnScreen ? isOnScreen : Iso.isPixOnScreen(verts.all[i].x, verts.all[i].y)
 				}
 
-				if (!isOnScreen)
+				return isOnScreen;
+			}
+
+			this.draw = function(elapsed, context) {
+				this._renderer.draw(this, elapsed, context, this._x, this._y, this._z, this._w, this._h);
+
+				if (this.children)
 				{
-					return;
-				}
-
-				this._renderer.draw(elapsed, context, this._x, this._y, this._z, this._w, this._h);
-
-				if (edges) {
-					for (var i = 0; i < edges.length; i++) {
-
+					for (var name in this.children)
+					{
+						if (this.children[name])
+						{
+							this.children[name].draw(elapsed, context);
+						}
 					}
+
+					this.children = {};
 				}
 			};
 
@@ -93,27 +101,25 @@ define(["grass", "isometric"], function(Grass, Iso) {
 				return null;
 
 			return this._tiles[tx][ty];
-		}
+		};
 
-		this.draw = function(elapsed, context) {
+		this.getChildrenForDraw = function()
+		{
 			var zBuff = [];
 
 			for (var x = 0; x < this._width; x++) {
 				for (var y = 0; y < this._height; y++) {
-					zBuff.push({
-						tile: this._tiles[x][y],
-						z: this._tiles[x][y].zBuffIndex()
-					});
+					if (this._tiles[x][y].canDraw())
+					{
+						zBuff.push({
+							renderer: this._tiles[x][y],
+							z: this._tiles[x][y].zBuffIndex()
+						});
+					}
 				}
 			}
 
-			zBuff.sort(function(a, b) {
-				return a.z - b.z
-			});
-
-			for (var i = 0; i < zBuff.length; i++) {
-				zBuff[i].tile.draw(elapsed, context);
-			}
+			return zBuff;
 		};
 
 		this.update = function(elapsed) {
