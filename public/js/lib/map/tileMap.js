@@ -3,6 +3,8 @@ define(["grass", "isometric", "Tile"], function(Grass, Iso, Tile) {
 		this._tileWidth = tileWidth;
 		this._tileHeight = tileHeight;
 
+		this.idColorToTile = 
+
 		this.resize = function(width, height) {
 			this._width = width;
 			this._height = height;

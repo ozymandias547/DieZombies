@@ -1,14 +1,18 @@
-define(["isometric"], function(Iso) {
-	return function Tile(x, y, w, h, z, tileMap, rendererType) {
+define(["isometric", "Screen"], function(Iso, Screen) {
+	var Tile = function(x, y, w, h, z, tileMap, rendererType) {
 		this._x = x;
 		this._y = y;
 		this._z = z;
 		this._w = w;
 		this._h = h;
-		this._tileMap = tileMap;
+		this.highlighted = false;
+		this.tileMap = tileMap;
 		this._renderer = new rendererType(tileMap, this);
 		this.children = {};
 		this.id = "t" + this._x.toString(16) + ":" + this._y.toString(16);
+		this.idColor = this.genIDColor();
+		var idName = "c" + this.getIDColorNum().toString(10);
+		Screen.idColorToObjectMap[idName] = this;
 
 		// Siblings are:
 		// 0 == +x
@@ -17,26 +21,42 @@ define(["isometric"], function(Iso) {
 		// 3 == -y
 		// So siblings at [0] is always the sibling in the positive x direction.
 		this.siblings = [];
+	};
 
-		this.x = function() {
+	Tile.prototype = {
+		getIDColorNum: function() {
+			return (this._x + 1) * this.tileMap._height + this._y;
+		},
+		genIDColor: function() {
+			function pad(number, length) {
+				var str = '' + number;
+				while (str.length < length) str = '0' + str;
+				return str;
+			}
+
+			function toRGBHex(val) {
+				return pad(val.toString(16), 6);
+			}
+
+			// Returns a UNIQUE color for each tile, starting at 0 (black)
+			return "#" + toRGBHex(this.getIDColorNum() + 0x666666);
+		},
+
+		x: function() {
 			return this._x;
-		};
+		},
 
-		this.y = function() {
+		y: function() {
 			return this._y;
-		};
+		},
 
-		this.z = function() {
+		z: function() {
 			return this._z;
-		};
+		},
 
-		this.tileMap = function() {
-			return this._tileMap;
-		};
-
-		this.toString = function() {
+		toString: function() {
 			return this._x + ", " + this._y;
-		};
+		},
 
 		/**
 		 * Recursively evaluates which tiles can be rendered starting from this
@@ -44,7 +64,7 @@ define(["isometric"], function(Iso) {
 		 *
 		 * Renderables = {all: [], map: {}}
 		 */
-		this.getRenderablesRecursively = function(renderables) {
+		getRenderablesRecursively: function(renderables) {
 			renderables.map[this.id] = this;
 
 			if (!this.renderable()) {
@@ -63,9 +83,9 @@ define(["isometric"], function(Iso) {
 					this.siblings[i].getRenderablesRecursively(renderables);
 				}
 			}
-		}
+		},
 
-		this.renderable = function() {
+		renderable: function() {
 			var isOnScreen = false;
 			var verts = this._renderer.prepVerts(this._x, this._y, this._z, this._w, this._h);
 
@@ -74,10 +94,10 @@ define(["isometric"], function(Iso) {
 			}
 
 			return isOnScreen;
-		}
+		},
 
-		this.draw = function(elapsed, context) {
-			this._renderer.draw(this, elapsed, context, this._x, this._y, this._z, this._w, this._h);
+		draw: function(elapsed, context, contextHit) {
+			this._renderer.draw(this, elapsed, context, contextHit, this._x, this._y, this._z, this._w, this._h);
 
 			if (this.children) {
 				for (var name in this.children) {
@@ -88,12 +108,14 @@ define(["isometric"], function(Iso) {
 
 				this.children = {};
 			}
-		};
+		},
 
-		this.update = function(elapsed) {};
+		update: function(elapsed) {},
 
-		this.zBuffIndex = function() {
+		zBuffIndex: function() {
 			return Iso.pY(this._x + this._w, this._y, 0);
 		}
 	};
+
+	return Tile;
 });

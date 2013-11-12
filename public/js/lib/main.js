@@ -13,7 +13,10 @@
  		"EnemyFactory": "lib/entity/EnemyEntity",
  		"Sprite": "lib/Sprite",
  		"isometric" : "lib/map/isometric",
- 		"Tile" : "lib/map/Tile"
+ 		"Tile" : "lib/map/Tile",
+ 		"Screen" : "lib/map/Screen",
+ 		"AbstractState": "lib/gameStates/AbstractState",
+ 		"DebugState" : "lib/gameStates/DebugState"
  	},
 
  	waitSeconds: 15

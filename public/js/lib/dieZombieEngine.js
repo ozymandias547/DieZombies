@@ -1,7 +1,8 @@
-define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
-	function(fitViewportToRatio, Vec3, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric) {
+define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
+	function(fitViewportToRatio, Vec3, TileMap, DebugState, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric) {
 		var DieZombieEngine = function() {
 			this.canvas = null;
+			this.canvasHitDetection = null;
 			this.canvii = [];
 			this.curCanvasIX = 0;
 
@@ -19,6 +20,18 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			/* ---- INITIALZING ----------------------------- */
 			this.curCanvas = function() {
 				return this.canvii[this.curCanvasIX];
+			};
+
+			this.enterState = function(state) {
+				if (this.state) {
+					this.state.exit();
+				}
+
+				this.state = state;
+
+				if (this.state) {
+					this.state.enter();
+				}
 			};
 
 			this.init = function() {
@@ -86,6 +99,8 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 
 			this.initCanvas = function() {
 				this.canvii = [document.getElementById("canvas0"), document.getElementById("canvas1")];
+
+				this.canvasHitDetection = document.getElementById("canvasHitDetection");
 			}
 
 			this.initAnimationFrame = function() {
@@ -118,8 +133,8 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 
 				function handleMouseMove(e) {
 					var position = $("#canvas").position();
-					this.mouseX = (((e.clientX - self.canvas.getBoundingClientRect().left) - position.left)) / fitViewportToRatio.getScalar();
-					this.mouseY = (((e.clientY - self.canvas.getBoundingClientRect().top) - position.top)) / fitViewportToRatio.getScalar();
+					this.mouseX = (((e.clientX - self.curCanvas().getBoundingClientRect().left) - position.left)) / fitViewportToRatio.getScalar();
+					this.mouseY = (((e.clientY - self.curCanvas().getBoundingClientRect().top) - position.top)) / fitViewportToRatio.getScalar();
 				};
 			}
 
@@ -158,6 +173,9 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				this.context = this.curCanvas().getContext('2d');
 				this.context.clearRect(0, 0, this.curCanvas().width, this.curCanvas().height);
 
+				this.contextHit = this.canvasHitDetection.getContext('2d');
+				this.contextHit.clearRect(0, 0, this.curCanvas().width, this.curCanvas().height);
+
 				this.frameRateElapsed += elapsed;
 				this.frameCount++;
 
@@ -175,7 +193,7 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				});
 
 				for (var i = 0; i < zBuff.length; i++) {
-					zBuff[i].renderer.draw(elapsed, this.context);
+					zBuff[i].renderer.draw(elapsed, this.context, this.contextHit);
 				}
 
 				this.context.font = "16px Arial";
@@ -183,6 +201,8 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10), 5, 75);
 				this.context.fillText("tiles: " + zBuff.length, 5, 100);
 			};
+
+			this.enterState(DebugState);
 		}
 
 		return new DieZombieEngine();
