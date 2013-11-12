@@ -1,5 +1,8 @@
 define(function() {
 	return new(function Isometric() {
+		/**
+		 * cx, cy, cz are the location of the CENTER of the screen in world coordinates.
+		 */
 		this.view = function(cX, cY, cZ, scaleX, scaleY, scaleZ, screenW, screenH) {
 			this._cX = cX;
 			this._cY = cY;

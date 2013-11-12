@@ -1,23 +1,28 @@
-
 define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
 	function(fitViewportToRatio, Vec3, TileMap, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric) {
 		var DieZombieEngine = function() {
 			this.canvas = null;
+			this.canvii = [];
+			this.curCanvasIX = 0;
+
 			this.worldObjects = {};
 			this.mouseX = -1;
 			this.mouseY = -1;
 			this.isMouseDown = false;
 			this.lastTime = 0;
-			this.tileMap = new TileMap(10, 10, 60, 60);
+			this.tileMap = new TileMap(200, 200, 50, 50);
 			this.frameRateElapsed = 0;
 			this.frameRate = 0;
 			this.frameCount = 0;
-			this.frameCap = 60;
+			this.frameCap = 200;
 
 			/* ---- INITIALZING ----------------------------- */
+			this.curCanvas = function() {
+				return this.canvii[this.curCanvasIX];
+			};
 
-			this.init = function(canvasID) {
-				this.initCanvas(canvasID);
+			this.init = function() {
+				this.initCanvas();
 				this.initAnimationFrame();
 				this.bindInput();
 				this.buildFixtureData({
@@ -79,17 +84,8 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				}
 			}
 
-			this.initCanvas = function(canvasID) {
-				this.canvas = document.getElementById(canvasID);
-				this.context = this.canvas.getContext('2d');
-
-				this.context.beginPath();
-				this.context.rect(0, 0, this.canvas.width, this.canvas.height);
-				this.context.fillStyle = 'yellow';
-				this.context.fill();
-				this.context.lineWidth = 7;
-				this.context.strokeStyle = 'black';
-				this.context.stroke();
+			this.initCanvas = function() {
+				this.canvii = [document.getElementById("canvas0"), document.getElementById("canvas1")];
 			}
 
 			this.initAnimationFrame = function() {
@@ -127,19 +123,16 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 				};
 			}
 
-		
+
 			/* ---- GAME LOOP ----------------------------- */
 
 			this.start = function() {
 				var self = this;
 
 				(function loop(animStart) {
-					self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
-
 					self.elapsed = self.lastTime > 0 ? ((new Date().getTime() - self.lastTime) / 1000.0) : 0.0;
-					
-					if (self.elapsed == 0 && self.lastTime)
-					{
+
+					if (self.elapsed == 0 && self.lastTime) {
 						window.requestAnimFrame(loop);
 						return;
 					}
@@ -162,6 +155,9 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 			};
 
 			this.draw = function(elapsed) {
+				this.context = this.curCanvas().getContext('2d');
+				this.context.clearRect(0, 0, this.curCanvas().width, this.curCanvas().height);
+
 				this.frameRateElapsed += elapsed;
 				this.frameCount++;
 
@@ -170,24 +166,22 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'Entity', 'CircleFactory', 'Pla
 					this.frameRateElapsed = this.frameCount = 0;
 				}
 
-				Isometric.view(this.player.position.x, this.player.position.y, this.player.position.z, 1.0, 0.5, 1.0, this.canvas.width, this.canvas.height);
+				Isometric.view(this.player.position.x, this.player.position.y, this.player.position.z, 1.0, 0.5, 1.0, this.curCanvas().width, this.curCanvas().height);
 
-				var zBuff = [];
-
-				zBuff = zBuff.concat(this.tileMap.getChildrenForDraw());
+				var zBuff = this.tileMap.getRenderableTilesFrom(this.player.tile).all;
 
 				zBuff.sort(function(a, b) {
 					return a.z - b.z;
 				});
 
-				for (var i = 0; i < zBuff.length; i++)
-				{
+				for (var i = 0; i < zBuff.length; i++) {
 					zBuff[i].renderer.draw(elapsed, this.context);
 				}
 
-				this.context.font = "20px Arial";
+				this.context.font = "16px Arial";
 				this.context.fillText("FPS: " + Math.round(this.frameRate).toString(10), 5, 50);
-				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10), 5, 100);
+				this.context.fillText("elapsed: " + (Math.round(this.elapsed * 1000) / 1000).toString(10), 5, 75);
+				this.context.fillText("tiles: " + zBuff.length, 5, 100);
 			};
 		}
 

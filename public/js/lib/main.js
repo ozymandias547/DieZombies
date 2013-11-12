@@ -12,7 +12,8 @@
  		"CircleFactory": "lib/entity/CircleEntity",
  		"EnemyFactory": "lib/entity/EnemyEntity",
  		"Sprite": "lib/Sprite",
- 		"isometric" : "lib/map/isometric"
+ 		"isometric" : "lib/map/isometric",
+ 		"Tile" : "lib/map/Tile"
  	},
 
  	waitSeconds: 15
@@ -22,7 +23,7 @@
 
  	$(document).ready(function() {
 
- 		dieZombieEngine.init("canvas");
+ 		dieZombieEngine.init();
  		dieZombieEngine.start();
 
  		$(window).on("resize", fitViewportToRatio.calculate);
