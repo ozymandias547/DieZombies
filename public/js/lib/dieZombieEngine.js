@@ -1,5 +1,5 @@
-define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'CircleFactory', 'PlayerFactory', 'EnemyFactory', 'isometric'],
-	function(fitViewportToRatio, Vec3, TileMap, DebugState, Entity, CircleFactory, PlayerFactory, EnemyFactory, Isometric) {
+define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'PlayerEntity', 'EnemyEntity', 'isometric'],
+	function(fitViewportToRatio, Vec3, TileMap, DebugState, Entity, PlayerEntity, EnemyEntity, Isometric) {
 		var DieZombieEngine = function() {
 			this.canvas = null;
 			this.canvasHitDetection = null;
@@ -38,64 +38,35 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'Circle
 				this.initCanvas();
 				this.initAnimationFrame();
 				this.bindInput();
-				this.buildFixtureData({
-					"enemy1": {
-						role: "enemy",
-						x: 300,
-						y: 200,
-						radius: 30,
-						color: "red"
-					},
-					"enemy2": {
-						role: "enemy",
-						x: 400,
-						y: 200,
-						radius: 30,
-						color: "red"
-					},
-					"enemy3": {
-						role: "enemy",
-						x: 500,
-						y: 300,
-						radius: 30,
-						color: "red"
-					},
-					"enemy4": {
-						role: "enemy",
-						x: 500,
-						y: 400,
-						radius: 30,
-						color: "red"
-					},
-					"enemy5": {
-						role: "enemy",
-						x: 500,
-						y: 100,
-						radius: 30,
-						color: "red"
-					},
-					"player1": {
-						role: "player",
-						x: 100,
-						y: 100,
-						radius: 20,
-						color: "green"
-					}
+
+				this.addPlayer({
+					id: "player1",
+					role: "player",
+					x: 100,
+					y: 100,
+					radius: 20,
+					color: "green"
 				});
+
+				this.addEnemy({
+					id: "enemy1",
+					role: "enemy",
+					x: 100,
+					y: 100,
+					radius: 30,
+					color: "red"
+				})
+
 			}
 
-			this.buildFixtureData = function(obj) {
-				for (var id in obj) {
-					if (obj[id].role == "player")
-						this.worldObjects[id] = this.player = new PlayerFactory(id, obj[id].x, obj[id].y, NaN, "red", obj[id].radius, this);
-
-					if (obj[id].role == "circle")
-						this.worldObjects[id] = new CircleFactory(id, obj[id].x, obj[id].y, 0, "red", obj[id].radius);
-
-					if (obj[id].role == "enemy")
-						this.worldObjects[id] = new EnemyFactory(id, obj[id].x, obj[id].y, 0, "red", obj[id].radius);
-				}
+			this.addPlayer = function(obj) {
+				this.worldObjects[obj.id] = this.player = new PlayerEntity(obj.id, obj.x, obj.y, NaN, "red", obj.radius, this);
 			}
+
+			this.addEnemy = function(obj) {
+				this.worldObjects[obj.id] = new EnemyEntity(obj.id, obj.x, obj.y, NaN, "red", obj.radius, this);
+			}
+
 
 			this.initCanvas = function() {
 				this.canvii = [document.getElementById("canvas0"), document.getElementById("canvas1")];
@@ -206,5 +177,4 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'Circle
 		}
 
 		return new DieZombieEngine();
-	}
-);
+	});

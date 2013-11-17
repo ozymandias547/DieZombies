@@ -1,10 +1,10 @@
 define(["Entity", "isometric"], function(Entity, Iso) {
 	var CircleEntity = function(name, x, y, color, radius) {
-		Entity().constructor.call(this, name, x, y, color);
+		Entity.call(this, name, x, y, color);
 		this.radius = radius;
 	}
 
-	CircleEntity.prototype = Entity();
+	CircleEntity.prototype = new Entity();
 	CircleEntity.prototype.constructor = CircleEntity;
 
 	CircleEntity.prototype = {

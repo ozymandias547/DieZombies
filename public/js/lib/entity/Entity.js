@@ -22,9 +22,9 @@ define(["vec3", "isometric"], function(Vec3, Iso) {
 	}
 
 	//to make a new Entity, just call the function
-	return function(x, y, color) {
-		return new Entity(x, y, color);
-	}
+	
+	return Entity;
+	
 
 
 });
