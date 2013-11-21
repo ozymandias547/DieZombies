@@ -48,14 +48,9 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'Player
 					color: "green"
 				});
 
-				this.addEnemy({
-					id: "enemy1",
-					role: "enemy",
-					x: 100,
-					y: 100,
-					radius: 30,
-					color: "red"
-				})
+				// for (var i = 0; i < 5; i++)
+				// 	this.addEnemy({ id: "enemy" + i, role: "enemy", x: (Math.random()*500), y: (Math.random()*500), radius: 30, color: "red" });
+				
 
 			}
 
@@ -70,7 +65,6 @@ define(['fitViewportToRatio', 'vec3', 'tileMap', 'DebugState', 'Entity', 'Player
 
 			this.initCanvas = function() {
 				this.canvii = [document.getElementById("canvas0"), document.getElementById("canvas1")];
-
 				this.canvasHitDetection = document.getElementById("canvasHitDetection");
 			}
 

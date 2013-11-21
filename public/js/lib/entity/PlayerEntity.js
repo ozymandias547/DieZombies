@@ -9,6 +9,34 @@ define(["Humanoid", "vec3", "Sprite", "isometric"], function(Humanoid, Vec3, Spr
 		this.leftPressed = false;
 		this.previousPressed = "right";
 
+		this.image = new Image();
+		this.image.src = "assets/GirlDarkExample.png";
+
+		this.image.onload = function() {
+			this.isReady = true;
+			this.runningDown = new Sprite(this.image, .2, 40, 40, [
+				[0, 0],
+				[40, 0],
+				[80, 0]
+			]);
+			this.runningRight = new Sprite(this.image, .2, 40, 40, [
+				[0, 40],
+				[40, 40],
+				[80, 40]
+			]);
+			this.runningUp = new Sprite(this.image, .2, 40, 40, [
+				[0, 80],
+				[40, 80],
+				[80, 80]
+			]);
+			this.runningLeft = new Sprite(this.image, .2, 40, 40, [
+				[0, 120],
+				[40, 120],
+				[80, 120]
+			]);
+
+		}.bind(this);
+
 		document.addEventListener("keydown", this.handleKeyDown.bind(this))
 		document.addEventListener("keyup", this.handleKeyUp.bind(this))
 	}
@@ -16,6 +44,32 @@ define(["Humanoid", "vec3", "Sprite", "isometric"], function(Humanoid, Vec3, Spr
 	PlayerEntity.prototype = new Humanoid();
 	PlayerEntity.prototype.constructor = PlayerEntity;
 
+	PlayerEntity.prototype.drawSprite = function(elapsed, context, x, y) {
+		if (this.isReady) {
+			switch (this.previousPressed) {
+				case "up":
+					if (this.isMoving(.5))
+						this.runningUp.draw(context, elapsed, x, y);
+					else this.runningUp.draw(context, elapsed, x, y, 1);
+					break;
+				case "right":
+					if (this.isMoving(.5))
+						this.runningRight.draw(context, elapsed, x, y);
+					else this.runningRight.draw(context, elapsed, x, y, 1);
+					break;
+				case "down":
+					if (this.isMoving(.5))
+						this.runningDown.draw(context, elapsed, x, y);
+					else this.runningDown.draw(context, elapsed, x, y, 1);
+					break;
+				case "left":
+					if (this.isMoving(.5))
+						this.runningLeft.draw(context, elapsed, x, y);
+					else this.runningLeft.draw(context, elapsed, x, y, 1);
+					break;
+			}
+		}
+	}
 
 	PlayerEntity.prototype.handleControls = function(elapsed) {
 		var deltaX = 0,
