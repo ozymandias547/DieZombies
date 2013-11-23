@@ -1,0 +1,8 @@
+{
+	"publicDir": "/public",
+	"javascriptRootDir": "/public/js/lib",
+	"jsOutputPrefix": "/lib",
+	"requireMain": "/public/js/lib/main.js",
+	"outputStartToken": "/** GENERATED REQUIRE START **/",
+	"outputEndToken": "/** GENERATED REQUIRE END **/"
+}
