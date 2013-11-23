@@ -59,8 +59,6 @@ var finalize = function() {
 		return;
 	}
 
-	console.log(classInfos);
-
 	// We loop through every file...
 	for (var i = 0; i < classInfos.length; i++)
 	{
@@ -77,7 +75,7 @@ var finalize = function() {
 
 			for (var q = 0; q < quotes.length; q++)
 			{
-				var ix = contents.indexOf(classInfos[j].js.className + quotes[q]);
+				var ix = contents.toUpperCase().indexOf(classInfos[j].js.className.toUpperCase() + quotes[q]);
 
 				if (ix != -1)
 				{
@@ -87,7 +85,7 @@ var finalize = function() {
 
 					contents = replaceMidWith(contents, startIX, endIX, classInfos[j].js.packageName + "." + classInfos[j].js.className);
 
-					fs.writeFileSync("gen/" + classInfos[i].js.className + "-gen.js", contents);
+					fs.writeFileSync(classInfos[i].fullPath, contents);
 				}
 			}
 		}

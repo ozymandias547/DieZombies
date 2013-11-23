@@ -7,6 +7,7 @@ var dataLoaded = false;
 var projectFileLoaded = false;
 var classInfos = [];
 var requireOutputFilePrev = null;
+var classNameDuplicateCheck = {};
 
 var getFormatPrefixAtPoint = function(fileContents, index) {
 	var prefix = "";

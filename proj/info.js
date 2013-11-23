@@ -1,9 +1,9 @@
 fs = require("fs");
-
-// This will allow us to write our output to a pipe and not die until the other end process all of our output.
-process.on("SIGPIPE", process.exit);
+project = require("./ProjectLibrary");
 
 var settings = {};
+var classNameDuplicateCheck = {};
+var errors = [];
 
 var endsWith = function(str, value) {
 	return str.indexOf(value) == str.length - value.length;
@@ -33,11 +33,17 @@ var getJSCodeInformation = function(path) {
 
 	var packageName = "";
 
-	for (var i = 0; i < split.length - 1; i++)
-	{
+	for (var i = 0; i < split.length - 1; i++) {
 		packageName += split[i];
 	}
-	
+
+	if (classNameDuplicateCheck[className] != null) {
+		errors.push({
+			message: "Duplicate class found: '" + className + "'.\n    at '" + packageName + "'\n    at '" + classNameDuplicateCheck[className] + "'\nClass names must be unique."
+		});
+	}
+
+	classNameDuplicateCheck[className] = packageName;
 	return {
 		packageName: packageName,
 		className: className,
@@ -60,17 +66,18 @@ var isClassFileFilter = {
 	}
 }
 
-fs.readFile('./project.json', function(err, data) {
-	if (err) throw err;
-
-	settings = JSON.parse(data);
+project.readProject(function (projectSettings) {
+	settings = projectSettings;
 
 	settings.javascriptRootDirFull = fs.realpathSync(".") + settings.javascriptRootDir;
 
 	find(settings.javascriptRootDirFull, function(found) {
 		found.sort(fileCompareFunction);
 
-		process.stdout.write(JSON.stringify({classes: found}, null, 4));
+		process.stdout.write(JSON.stringify({
+			classes: found,
+			errors: errors
+		}, null, 4));
 	}, isClassFileFilter);
 });
 
@@ -93,7 +100,7 @@ var find = function(dir, callback, filter, recurse, found, waiter) {
 		var filteredFiles = [];
 
 		for (var i = 0; i < files.length; i++) {
-			var filename = dir + "/" + files[i];	
+			var filename = dir + "/" + files[i];
 			var stat = fs.statSync(filename);
 
 			var findToken = null;
